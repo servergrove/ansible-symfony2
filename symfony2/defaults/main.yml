@@ -1,0 +1,5 @@
+---
+# defaults file for symfony2
+vars:
+  symfony2_project_release: 1
+  symfony2_project_branch: master
