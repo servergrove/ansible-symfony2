@@ -3,3 +3,4 @@
 vars:
   symfony2_project_release: 1
   symfony2_project_branch: master
+  symfony2_project_php_path: php
