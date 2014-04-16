@@ -36,6 +36,7 @@ Role Variables
     symfony2_project_repo: URL of git repository.
     symfony2_project_release: Release number, can be numeric, we recommend to set it to release date/time, 20140327100911
     symfony2_project_branch: git branch to deploy.
+    symfony2_project_php_path: /usr/local/php54/bin/php
 ```
 
 Dependencies
