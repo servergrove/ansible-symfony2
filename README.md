@@ -18,6 +18,14 @@ Requirements
 
 None
 
+Installation
+------------
+
+```
+    $ ansible-galaxy install servergrove.symfony2
+```
+
+
 Role Variables
 --------------
 
