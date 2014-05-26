@@ -9,6 +9,7 @@ project
         release
     shared
         web/uploads
+        app/config
         app/logs
     current -> symlink to latest deployed release
 ```
