@@ -28,5 +28,7 @@
   shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} {{symfony2_project_root}}/composer.phar install {{symfony2_project_composer_opts}}
 - name: Dump assets
   shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} app/console assetic:dump --env={{symfony2_project_env}} {{symfony2_project_console_opts}}
+- name: Run migrations
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{symfony2_project_php_path}} app/console doctrine:migrations:migrate -n; fi
 - name: Create symlink
   file: state=link src={{symfony2_project_root}}/releases/{{symfony2_project_release}} path={{symfony2_project_root}}/current
