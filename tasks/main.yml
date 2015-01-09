@@ -18,6 +18,13 @@
 - name: Create symlink for app/config/parameters.ini from shared directory
   shell: ln -s {{symfony2_project_root}}/shared/app/config/parameters.ini {{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini creates={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini
   when: parameters_ini.stat.exists
+
+- name: Remove app/logs directory
+  file:
+    state=absent
+    path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs
+    recurse=yes
+
 - name: Create app/logs symlink
   file: state=link src={{symfony2_project_root}}/shared/app/logs path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs
 - name: Create web/uploads symlink
