@@ -32,3 +32,5 @@
   shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{symfony2_project_php_path}} app/console doctrine:migrations:migrate -n; fi
 - name: Create symlink
   file: state=link src={{symfony2_project_root}}/releases/{{symfony2_project_release}} path={{symfony2_project_root}}/current
+- name: Cleanup releases.
+  shell: cd {{symfony2_project_root}}/releases && ls -t1 | tail -n +$(({{symfony2_project_keep_releases}}+1)) | xargs -n1 rm -rf
