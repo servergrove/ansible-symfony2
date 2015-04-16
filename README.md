@@ -41,6 +41,7 @@ Role Variables
     symfony2_project_env: prod
     symfony2_project_console_opts: ''
     symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
+    symfony2_project_clean_versioning: true
 ```
 
 Dependencies
