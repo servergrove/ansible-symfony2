@@ -25,7 +25,7 @@
 - name: Install composer
   get_url: url=https://getcomposer.org/composer.phar dest={{symfony2_project_root}}/composer.phar mode=0755 validate_certs=no
 - name: Run composer install
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} {{symfony2_project_root}}/composer.phar install {{symfony2_project_composer_opts}}
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && export SYMFONY_ENV={{symfony2_project_env}}; {{symfony2_project_php_path}} {{symfony2_project_root}}/composer.phar install {{symfony2_project_composer_opts}}
 - name: Dump assets
   shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} app/console assetic:dump --env={{symfony2_project_env}} {{symfony2_project_console_opts}}
 - name: Run migrations
