@@ -8,7 +8,7 @@
     symfony2_project_root: ~/test_app
     symfony2_project_name: travis-test
     symfony2_project_composer_path: ~/test_app/shared
-    symfony2_project_repo: git@github.com:symfony/symfony-standard.git
+    symfony2_project_repo: https://github.com/symfony/symfony-standard.git
     symfony2_project_release: 1
     symfony2_project_branch: "2.6"
     symfony2_project_php_path: php
