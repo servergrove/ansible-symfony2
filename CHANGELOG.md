@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2
+* fixed merge errors
+* fixed deployment issues with config if already exists in project
+* fixed issue with missing SYMFONY_ENV while composer install
+* fixed composer path variable missing
+* added tests directory and travis.yml for testing
+
 ## v0.1
 
 * structural refactoring (creating files, directories, ...)

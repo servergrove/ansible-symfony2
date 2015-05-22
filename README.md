@@ -34,6 +34,7 @@ Role Variables
 - vars:
     symfony2_project_root: Path where application will be deployed on server.
     symfony2_project_name: Name of project.
+    symfony2_project_composer_path: path where composer.phar will be stored (e.g. project_root/shared)
     symfony2_project_repo: URL of git repository.
     symfony2_project_release: Release number, can be numeric, we recommend to set it to release date/time, 20140327100911
     symfony2_project_branch: git branch to deploy.
@@ -41,11 +42,8 @@ Role Variables
     symfony2_project_env: prod
     symfony2_project_console_opts: ''
     symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
-<<<<<<< HEAD
     symfony2_project_keep_releases: 5
-=======
     symfony2_project_clean_versioning: true
->>>>>>> 86069b4780bce7951c4324a6312b1d99b37fa6e8
 ```
 
 Dependencies

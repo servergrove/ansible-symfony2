@@ -6,8 +6,8 @@
     - { path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}" }
     - { path: "{{symfony2_project_root}}/shared" }
     - { path: "{{symfony2_project_root}}/shared/app/config" }
-    - { path: "{{symfony2_project_root}}/shared/app/uploads" }
     - { path: "{{symfony2_project_root}}/shared/app/logs" }
+    - { path: "{{symfony2_project_root}}/shared/web/uploads" }
 
 - name: Pull sources from the repository.
   git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{symfony2_project_release}} version={{symfony2_project_branch}} accept_hostkey=yes
@@ -16,11 +16,23 @@
   file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/.git
   when: symfony2_project_clean_versioning == true
 
+# will be replaced with symlink
+- name: Ensure logs directory is not present.
+  file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs
+
 - name: Create symlinks to shared directories.
   file: state=link src={{item.src}} path={{item.path}}
   with_items:
-    - { src: "{{symfony2_project_root}}/shared/web/uploads", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/uploads" }
-    - { src: "{{symfony2_project_root}}/shared/app/logs", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/logs" }
+    - { src: "{{symfony2_project_root}}/shared/app/logs", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs" }
+    - { src: "{{symfony2_project_root}}/shared/web/uploads", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/web/uploads" }
+
+- name: Check if config dir exists.
+  stat: path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config
+  register: config_dir
+
+- name: Link configs dir if not yet exists.
+  file: state=link src={{symfony2_project_root}}/shared/app/config path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config
+  when: config_dir.stat.exists == false
 
 - name: Check if shared/app/config/parameters.ini exists.
   stat: path={{symfony2_project_root}}/shared/app/config/parameters.ini
@@ -31,7 +43,7 @@
   when: parameters_ini.stat.exists
 
 - name: Check if composer exists.
-  stat: path={{symfony2_project_composer_path}}
+  stat: path={{symfony2_project_composer_path}}/composer.phar
   register: composer_file
 
 - name: Install composer.
@@ -39,11 +51,11 @@
   when: composer_file.stat.exists == false
 
 - name: Update composer if already exists.
-  shell: "{{symfony2_project_composer_path}} selfupdate"
+  shell: "{{symfony2_project_composer_path}}/composer.phar selfupdate"
   when: composer_file.stat.exists == true
 
 - name: Run composer install.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} {{symfony2_project_root}}/composer.phar install {{symfony2_project_composer_opts}}
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && export SYMFONY_ENV={{symfony2_project_env}} && {{symfony2_project_php_path}} {{symfony2_project_composer_path}}/composer.phar install {{symfony2_project_composer_opts}}
 
 - name: Dump assets.
   shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} app/console assetic:dump --env={{symfony2_project_env}} {{symfony2_project_console_opts}}
