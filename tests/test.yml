@@ -2,6 +2,7 @@
 - hosts: localhost
   remote_user: root
   roles:
+    - geerlingguy.php
     - ansible-symfony2
 
   vars:
