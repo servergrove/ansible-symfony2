@@ -4,4 +4,8 @@
 symfony2_project_release: 1
 symfony2_project_branch: master
 symfony2_project_php_path: php
+<<<<<<< HEAD
 symfony2_project_keep_releases: 5
+=======
+symfony2_project_clean_versioning: true
+>>>>>>> 86069b4780bce7951c4324a6312b1d99b37fa6e8
