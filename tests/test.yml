@@ -2,6 +2,7 @@
 - hosts: localhost
   remote_user: root
   roles:
+    - geerlingguy.php
     - ansible-symfony2
 
   vars:
@@ -9,9 +10,8 @@
     symfony2_project_name: travis-test
     symfony2_project_composer_path: ~/test_app/shared
     symfony2_project_repo: https://github.com/symfony/symfony-standard.git
-    symfony2_project_release: 1
     symfony2_project_branch: "2.6"
-    symfony2_project_php_path: /usr/bin/php
+    symfony2_project_php_path: php
     symfony2_project_env: prod
     symfony2_project_console_opts: '--no-debug'
     symfony2_project_composer_opts: '--no-dev --optimize-autoloader'

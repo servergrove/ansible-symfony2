@@ -1,34 +1,36 @@
-Symfony2
-========
+# Symfony2
 
 Ansible role to easily deploy Symfony2 applications. It will clone a git repository, download and run composer install, and run assetic:dump when finished. The resulting directory structure is similar to what capifony creates:
 
 ```
 project
+    composer.phar
     releases
         release
     shared
         web/uploads
-        app/config
-        app/logs
+        app
+            config
+            logs
     current -> symlink to latest deployed release
 ```
 
-Requirements
-------------
+## Requirements
 
 None
 
-Installation
-------------
+## Installation
 
 ```
     $ ansible-galaxy install servergrove.symfony2
 ```
 
 
-Role Variables
---------------
+## Role Variables
+
+### Possible variables
+
+These are the possible role variables - you only need to have a small set defined, there are defaults.
 
 ```yaml
 - vars:
@@ -44,6 +46,21 @@ Role Variables
     symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
     symfony2_project_keep_releases: 5
     symfony2_project_clean_versioning: true
+```
+
+### Role variable defaults
+
+As you can see, the release number default is the current date/time with seconds to allow for easy multiple releases per day. But you can always overwrite with ```--extra-vars=""``` option.
+
+```yaml
+- vars
+    symfony2_project_release: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+    symfony2_project_branch: master
+    symfony2_project_php_path: php
+    symfony2_project_keep_releases: 5
+    symfony2_project_clean_versioning: true
+    symfony2_project_console_opts: ''
+    symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
 ```
 
 Dependencies
@@ -65,7 +82,7 @@ Including an example of how to use your role (for instance, with variables passe
 License
 -------
 
-MIT
+[MIT](LICENSE) license
 
 Author Information
 ------------------
