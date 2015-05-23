@@ -1,7 +1,7 @@
 ---
 # defaults file for symfony2
 
-symfony2_project_release: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+symfony2_project_release: ~
 symfony2_project_branch: master
 symfony2_project_php_path: php
 symfony2_project_keep_releases: 5

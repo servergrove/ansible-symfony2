@@ -1,5 +1,8 @@
 ---
 # tasks file for symfony2
+- set_fact: symfony2_project_release={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
+  when: symfony2_project_release == None
+
 - name: Create/prepare directories for release and shared data.
   file: state=directory path={{item.path}}
   with_items:
