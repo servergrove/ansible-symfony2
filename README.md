@@ -1,6 +1,8 @@
 # Symfony2
 
-Ansible role to easily deploy Symfony2 applications. It will clone a git repository, download and run composer install, and run assetic:dump when finished. The resulting directory structure is similar to what capifony creates:
+Ansible role to easily deploy Symfony2 applications.
+It will clone a git repository, a specific branch or a tag, download and run composer install, and run assetic:dump when finished.
+The resulting directory structure is similar to what capifony creates:
 
 ```
 project
@@ -8,21 +10,51 @@ project
     releases
         release
     shared
-        web/uploads
+        web
+            uploads
         app
             config
             logs
     current -> symlink to latest deployed release
 ```
 
+It will also keep the ```releases``` directory clean and deletes all but your configured amount of releases.
+You're also able to switch on/off whether ansible should execute doctrine migrations, or mongodb schema update, etc.
+
 ## Requirements
 
-None
+Installed version of Ansible.
 
 ## Installation
 
+### Ansible galaxy
+
 ```
     $ ansible-galaxy install servergrove.symfony2
+```
+
+### Usage
+
+Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+
+```yaml
+---
+- hosts: servers
+  roles:
+    - ansible-symfony2
+
+  vars:
+    symfony2_project_root: /test_app
+    symfony2_project_name: travis-test
+    symfony2_project_composer_path: /test_app/shared
+    symfony2_project_repo: https://github.com/symfony/symfony-standard.git
+    symfony2_project_branch: "2.6"
+    symfony2_project_php_path: php
+    symfony2_project_env: prod
+    symfony2_project_console_opts: '--no-debug'
+    symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
+    symfony2_project_keep_releases: 5
+    symfony2_project_clean_versioning: true
 ```
 
 
@@ -33,6 +65,7 @@ None
 These are the possible role variables - you only need to have a small set defined, there are defaults.
 
 ```yaml
+---
 - vars:
     symfony2_project_root: Path where application will be deployed on server.
     symfony2_project_name: Name of project.
@@ -46,6 +79,8 @@ These are the possible role variables - you only need to have a small set define
     symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
     symfony2_project_keep_releases: 5
     symfony2_project_clean_versioning: true
+    symfony2_fire_schema_update: false # Runs doctrine:mongodb:schema:update
+    symfony2_fire_migrations: false # Runs doctrine migrations script 
 ```
 
 ### Role variable defaults
@@ -53,38 +88,41 @@ These are the possible role variables - you only need to have a small set define
 As you can see, the release number default is the current date/time with seconds to allow for easy multiple releases per day. But you can always overwrite with ```--extra-vars=""``` option.
 
 ```yaml
+---
 - vars
-    symfony2_project_release: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+    symfony2_project_release: <datetime> # internally replaced with YmdHis
     symfony2_project_branch: master
-    symfony2_project_php_path: php
+    symfony2_project_php_path: /usr/bin/php
     symfony2_project_keep_releases: 5
     symfony2_project_clean_versioning: true
     symfony2_project_console_opts: ''
     symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
+    symfony2_fire_schema_update: false
+    symfony2_fire_migrations: false
 ```
 
-Dependencies
-------------
+## Dependencies
 
 None
 
-Example Playbook
--------------------------
+## Testing
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+The deployment contains a basic test, executed by travis. If you want to locally test the role, have a look into ```.travis.yml``` for the exceution statements and (maybe) remove the ```geerlingguy.php ``` from ```tests/test.yml``` if you have a local php executable (needed for composer install and symfony console scripts).
 
-```yaml
-- hosts: servers
-    roles:
-        - { role: servergrove.symfony2, symfony2_project_root: /var/www/vhosts/example.com/, symfony2_project_name: demo, symfony2_project_branch: master, symfony2_project_release: 1 }
+The test setup looks like this:
+
+```
+servergrove.symfony2
+    tests
+        inventory # hosts information
+        test.yml # playbook
+    .travis.yml # travis config
 ```
 
-License
--------
+## License
 
 [MIT](LICENSE) license
 
-Author Information
-------------------
+### Author Information
 
 Contributions are welcome: https://github.com/servergrove/ansible-symfony2
