@@ -1,6 +1,14 @@
 # Changelog
 
+## v0.3
+
+* working travis-ci tests
+* datetime release dirs by default
+* configurable migrations and schema update
+* README update
+
 ## v0.2
+
 * fixed merge errors
 * fixed deployment issues with config if already exists in project
 * fixed issue with missing SYMFONY_ENV while composer install
