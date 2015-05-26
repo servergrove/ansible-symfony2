@@ -35,7 +35,7 @@ Installed version of Ansible.
 
 ### Usage
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+This playbook is taken from the travis testcase. You can always pass these values as commandline parameters.
 
 ```yaml
 ---
@@ -57,6 +57,7 @@ Including an example of how to use your role (for instance, with variables passe
     symfony2_project_clean_versioning: true
 ```
 
+Commandline: ```~$ ansible-playbook -i inventory --extra-vars "symfony2_project_release=20150417142505,symfony2_project_branch=master" test.yml```
 
 ## Role Variables
 
