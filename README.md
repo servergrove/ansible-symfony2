@@ -53,7 +53,7 @@ This playbook is taken from the travis testcase. You can always pass these value
     symfony2_project_php_path: php
     symfony2_project_env: prod
     symfony2_project_console_opts: '--no-debug'
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
+    symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
     symfony2_project_keep_releases: 5
     symfony2_project_clean_versioning: true
 ```
@@ -78,7 +78,7 @@ These are the possible role variables - you only need to have a small set define
     symfony2_project_php_path: /usr/local/php54/bin/php
     symfony2_project_env: prod
     symfony2_project_console_opts: ''
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
+    symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
     symfony2_project_keep_releases: 5
     symfony2_project_clean_versioning: true
     symfony2_fire_schema_update: false # Runs doctrine:mongodb:schema:update
@@ -98,7 +98,7 @@ As you can see, the release number default is the current date/time with seconds
     symfony2_project_keep_releases: 5
     symfony2_project_clean_versioning: true
     symfony2_project_console_opts: ''
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
+    symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
     symfony2_fire_schema_update: false
     symfony2_fire_migrations: false
 ```
