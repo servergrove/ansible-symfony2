@@ -64,11 +64,11 @@
   shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} app/console assetic:dump --env={{symfony2_project_env}} {{symfony2_project_console_opts}}
 
 - name: Run migrations.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}}_{{symfony2_project_branch}} && if $(grep doctrine-migrations-bundle composer.json); then {{symfony2_project_php_path}} app/console doctrine:migrations:migrate -n; fi
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{symfony2_project_php_path}} app/console doctrine:migrations:migrate -n; fi
   when: symfony2_fire_migrations == true
 
 - name: Run mongodb schema update.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}}_{{symfony2_project_branch}} && if $(grep mongodb-odm composer.json); then {{symfony2_project_php_path}} app/console doctrine:mongodb:schema:update --no-interaction; fi
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep mongodb-odm composer.json); then {{symfony2_project_php_path}} app/console doctrine:mongodb:schema:update --no-interaction; fi
   when: symfony2_fire_schema_update == true
 
 - name: Create symlink.

@@ -17,3 +17,4 @@
     symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
     symfony2_project_keep_releases: 5
     symfony2_project_clean_versioning: true
+    symfony2_fire_migrations: true
