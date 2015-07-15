@@ -21,20 +21,20 @@
 
 # will be replaced with symlink
 - name: Ensure logs directory is not present.
-  file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs
+  file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_app_dir}}/logs
 
 - name: Create symlinks to shared directories.
   file: state=link src={{item.src}} path={{item.path}}
   with_items:
-    - { src: "{{symfony2_project_root}}/shared/app/logs", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs" }
-    - { src: "{{symfony2_project_root}}/shared/web/uploads", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/web/uploads" }
+    - { src: "{{symfony2_project_root}}/shared/app/logs", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_app_dir}}/logs" }
+    - { src: "{{symfony2_project_root}}/shared/web/uploads", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_web_dir}}/uploads" }
 
 - name: Check if config dir exists.
-  stat: path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config
+  stat: path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_app_dir}}/config
   register: config_dir
 
 - name: Link configs dir if not yet exists.
-  file: state=link src={{symfony2_project_root}}/shared/app/config path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config
+  file: state=link src={{symfony2_project_root}}/shared/app/config path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_app_dir}}/config
   when: config_dir.stat.exists == false
 
 - name: Check if shared/app/config/parameters.ini exists.
@@ -42,7 +42,7 @@
   register: parameters_ini
 
 - name: Create symlink for app/config/parameters.ini from shared directory.
-  shell: ln -s {{symfony2_project_root}}/shared/app/config/parameters.ini {{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini creates={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini
+  shell: ln -s {{symfony2_project_root}}/shared/app/config/parameters.ini {{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_app_dir}}/config/parameters.ini creates={{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_app_dir}}/config/parameters.ini
   when: parameters_ini.stat.exists
 
 - name: Check if composer exists.
