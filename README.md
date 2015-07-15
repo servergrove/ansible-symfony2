@@ -81,6 +81,7 @@ These are the possible role variables - you only need to have a small set define
     symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
     symfony2_project_keep_releases: 5
     symfony2_project_clean_versioning: true
+    symfony2_project_relative_root: / # the path of the symfony app, relative to the git clone root
     symfony2_fire_schema_update: false # Runs doctrine:mongodb:schema:update
     symfony2_fire_migrations: false # Runs doctrine migrations script 
 ```

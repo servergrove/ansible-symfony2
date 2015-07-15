@@ -21,20 +21,20 @@
 
 # will be replaced with symlink
 - name: Ensure logs directory is not present.
-  file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs
+  file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}}/app/logs
 
 - name: Create symlinks to shared directories.
   file: state=link src={{item.src}} path={{item.path}}
   with_items:
-    - { src: "{{symfony2_project_root}}/shared/app/logs", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs" }
-    - { src: "{{symfony2_project_root}}/shared/web/uploads", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/web/uploads" }
+    - { src: "{{symfony2_project_root}}/shared/app/logs", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}}/app/logs" }
+    - { src: "{{symfony2_project_root}}/shared/web/uploads", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}}/web/uploads" }
 
 - name: Check if config dir exists.
-  stat: path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config
+  stat: path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}}/app/config
   register: config_dir
 
 - name: Link configs dir if not yet exists.
-  file: state=link src={{symfony2_project_root}}/shared/app/config path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config
+  file: state=link src={{symfony2_project_root}}/shared/app/config path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}}/app/config
   when: config_dir.stat.exists == false
 
 - name: Check if shared/app/config/parameters.ini exists.
@@ -42,7 +42,7 @@
   register: parameters_ini
 
 - name: Create symlink for app/config/parameters.ini from shared directory.
-  shell: ln -s {{symfony2_project_root}}/shared/app/config/parameters.ini {{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini creates={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini
+  shell: ln -s {{symfony2_project_root}}/shared/app/config/parameters.ini {{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}}/app/config/parameters.ini creates={{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}}/app/config/parameters.ini
   when: parameters_ini.stat.exists
 
 - name: Check if composer exists.
@@ -58,21 +58,21 @@
   when: composer_file.stat.exists == true
 
 - name: Run composer install.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && export SYMFONY_ENV={{symfony2_project_env}} && {{symfony2_project_php_path}} {{symfony2_project_composer_path}}/composer.phar install {{symfony2_project_composer_opts}}
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}} && export SYMFONY_ENV={{symfony2_project_env}} && {{symfony2_project_php_path}} {{symfony2_project_composer_path}}/composer.phar install {{symfony2_project_composer_opts}}
 
 - name: Dump assets.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} app/console assetic:dump --env={{symfony2_project_env}} {{symfony2_project_console_opts}}
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}} && {{symfony2_project_php_path}} app/console assetic:dump --env={{symfony2_project_env}} {{symfony2_project_console_opts}}
 
 - name: Run migrations.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{symfony2_project_php_path}} app/console doctrine:migrations:migrate -n; fi
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}} && if $(grep doctrine-migrations-bundle composer.json); then {{symfony2_project_php_path}} app/console doctrine:migrations:migrate -n; fi
   when: symfony2_fire_migrations == true
 
 - name: Run mongodb schema update.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep mongodb-odm composer.json); then {{symfony2_project_php_path}} app/console doctrine:mongodb:schema:update --no-interaction; fi
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}} && if $(grep mongodb-odm composer.json); then {{symfony2_project_php_path}} app/console doctrine:mongodb:schema:update --no-interaction; fi
   when: symfony2_fire_schema_update == true
 
 - name: Create symlink.
-  file: state=link src={{symfony2_project_root}}/releases/{{symfony2_project_release}} path={{symfony2_project_root}}/current
+  file: state=link src={{symfony2_project_root}}/releases/{{symfony2_project_release}}/{{symfony2_project_relative_root}} path={{symfony2_project_root}}/current
 
 - name: Cleanup releases.
   shell: cd {{symfony2_project_root}}/releases && ls -t1 | tail -n +$(({{symfony2_project_keep_releases}}+1)) | xargs -n1 rm -rf
