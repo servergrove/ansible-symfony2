@@ -12,15 +12,12 @@
     - { path: "{{symfony2_project_root}}/shared/app/logs" }
     - { path: "{{symfony2_project_root}}/shared/web/uploads" }
 
-# GIT_SSH_COMMAND alleviates need for wrapper, but unfortunately only available in git >2.3.x
-- include: generate_git_ssh_wrapper.yml
+# include does not allow templated path
+- include: "git_clone_export.yml"
+  when: symfony2_vcs_export_method == "git_clone"
 
-- name: Pull sources from the repository.
-  shell: "
-    GIT_SSH={{ tmp_git_ssh.stdout }}
-    git archive --remote={{symfony2_project_repo}} {{symfony2_project_branch}}
-    | tar -x -C {{symfony2_project_root}}/releases/{{symfony2_project_release}}
-    "
+- include: "git_archive_export.yml"
+  when: symfony2_vcs_export_method == "git_archive"
 
 # will be replaced with symlink
 - name: Ensure logs directory is not present.

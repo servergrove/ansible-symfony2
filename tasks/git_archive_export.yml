@@ -14,3 +14,11 @@
 - name: Generate GIT_SSH wrapper script.
   shell: "echo 'ssh -o BatchMode=yes $*' > {{tmp_git_ssh.stdout}}"
   when: not symfony2_ssh_accept_hostkey
+
+# GIT_SSH_COMMAND alleviates need for wrapper, but unfortunately only available in git >2.3.x
+- name: Pull sources from the repository using git archive.
+  shell: "
+    GIT_SSH={{ tmp_git_ssh.stdout }}
+    git archive --remote={{symfony2_project_repo}} {{symfony2_project_branch}}
+    | tar -x -C {{symfony2_project_root}}/releases/{{symfony2_project_release}}
+    "
