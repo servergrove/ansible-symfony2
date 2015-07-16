@@ -84,6 +84,7 @@ These are the possible role variables - you only need to have a small set define
     symfony2_fire_schema_update: false # Runs doctrine:mongodb:schema:update
     symfony2_fire_migrations: false # Runs doctrine migrations script
     symfony2_ssh_accept_hostkey: false # Accept unknown key, avoid blocking "yes/no" query by ssh
+    symfony2_vcs_export_method: git_clone # Can be either "git_clone" or "git_archive"
 ```
 
 ### Role variable defaults
