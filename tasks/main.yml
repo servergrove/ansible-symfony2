@@ -12,12 +12,12 @@
     - { path: "{{symfony2_project_root}}/shared/app/logs" }
     - { path: "{{symfony2_project_root}}/shared/web/uploads" }
 
-- name: Pull sources from the repository.
-  git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{symfony2_project_release}} version={{symfony2_project_branch}} accept_hostkey=yes
 
-- name: Clean out versioning.
-  file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/.git
-  when: symfony2_project_clean_versioning == true
+- name: Pull sources from the repository.
+  shell: "
+    git archive --remote={{symfony2_project_repo}} {{symfony2_project_branch}}
+    | tar -x -C {{symfony2_project_root}}/releases/{{symfony2_project_release}}
+    "
 
 # will be replaced with symlink
 - name: Ensure logs directory is not present.
