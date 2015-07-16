@@ -1,2 +1,3 @@
 ---
-# handlers file for symfony2
+- name: cleanup temporary files
+  file: name={{ tmp_git_ssh.stdout }} state=absent

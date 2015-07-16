@@ -12,9 +12,13 @@
     - { path: "{{symfony2_project_root}}/shared/app/logs" }
     - { path: "{{symfony2_project_root}}/shared/web/uploads" }
 
+# GIT_SSH_COMMAND alleviates need for wrapper, but unfortunately only available in git >2.3.x
+- include: generate_git_ssh_wrapper.yml
+  when: symfony2_ssh_accept_hostkey
 
 - name: Pull sources from the repository.
   shell: "
+    {{ ('GIT_SSH=' + tmp_git_ssh.stdout) if tmp_git_ssh.stdout is defined else '' }}
     git archive --remote={{symfony2_project_repo}} {{symfony2_project_branch}}
     | tar -x -C {{symfony2_project_root}}/releases/{{symfony2_project_release}}
     "
