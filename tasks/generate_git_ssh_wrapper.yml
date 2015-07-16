@@ -1,11 +1,11 @@
 ---
-- name: Create temporary GIT_SSH wrapper
+- name: Create temporary GIT_SSH wrapper.
   command: mktemp /tmp/ansible_git_ssh.XXXXXXXXX
   register: tmp_git_ssh
-  notify: cleanup temporary files
+  notify: Cleanup temporary files.
 
-- name: Make GIT_SSH wrapper executable
+- name: Make GIT_SSH wrapper executable.
   file: name={{ tmp_git_ssh.stdout }} mode="u+x"
 
-- name: Generate GIT_SSH wrapper script
+- name: Generate GIT_SSH wrapper script.
   shell: "echo 'ssh -o StrictHostKeyChecking=no $*' > {{tmp_git_ssh.stdout}}"
