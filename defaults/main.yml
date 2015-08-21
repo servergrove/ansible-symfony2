@@ -10,3 +10,7 @@ symfony2_project_console_opts: ''
 symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
 symfony2_fire_schema_update: false
 symfony2_fire_migrations: false
+
+# dynamic default
+- set_fact:
+      symfony2_project_composer_opts: "{% if symfony2_project_env == 'prod' %} '--no-dev --optimize-autoloader --no-interaction' {% else %} '' {% endif %}"
