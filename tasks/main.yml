@@ -57,6 +57,10 @@
   shell: "{{symfony2_project_composer_path}}/composer.phar selfupdate"
   when: composer_file.stat.exists == true
 
+- name: Add github token
+  shell: "{{ symfony2_project_composer_path }}/composer.phar config -g github-oauth.github.com {{ symfony2_github_token }}"
+  when: symfony2_github_token != ''
+
 - name: Run composer install.
   shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && export SYMFONY_ENV={{symfony2_project_env}} && {{symfony2_project_php_path}} {{symfony2_project_composer_path}}/composer.phar install {{symfony2_project_composer_opts}}
 
