@@ -10,3 +10,4 @@ symfony2_project_console_opts: ''
 symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
 symfony2_fire_schema_update: false
 symfony2_fire_migrations: false
+symfony2_git_depth: 0

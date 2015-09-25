@@ -13,7 +13,7 @@
     - { path: "{{symfony2_project_root}}/shared/web/uploads" }
 
 - name: Pull sources from the repository.
-  git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{symfony2_project_release}} version={{symfony2_project_branch}} accept_hostkey=yes
+  git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{symfony2_project_release}} version={{symfony2_project_branch}} accept_hostkey=yes depth={{ symfony2_git_depth }}
 
 - name: Clean out versioning.
   file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/.git
