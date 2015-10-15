@@ -13,7 +13,7 @@
     - { path: "{{symfony2_project_root}}/shared/web/uploads" }
 
 - name: Pull sources from the repository.
-  git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{symfony2_project_release}} version={{symfony2_project_branch}} accept_hostkey=yes
+  git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{symfony2_project_release}} version={{symfony2_project_branch}} accept_hostkey=yes depth={{ symfony2_git_depth }}
 
 - name: Clean out versioning.
   file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/.git
@@ -57,6 +57,10 @@
 - name: Update composer if already exists.
   shell: "{{symfony2_project_composer_path}}/composer.phar selfupdate"
   when: symfony2_project_maintain_composer == true and composer_file.stat.exists == true
+
+- name: Add github token
+  shell: "{{ symfony2_project_composer_path }}/composer.phar config -g github-oauth.github.com {{ symfony2_github_token }}"
+  when: symfony2_github_token != ''
 
 - name: Run composer install.
   shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && export SYMFONY_ENV={{symfony2_project_env}} && {{symfony2_project_php_path}} {{symfony2_project_composer_path}}/composer.phar install {{symfony2_project_composer_opts}}
