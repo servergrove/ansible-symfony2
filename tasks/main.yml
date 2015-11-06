@@ -3,6 +3,9 @@
 - set_fact: symfony2_project_release={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
   when: symfony2_project_release == None
 
+- shell: cat {{symfony2_project_root}}/releases/{{symfony2_project_release}}/composer.json
+  register: composer_content
+
 - name: Create/prepare directories for release and shared data.
   file: state=directory path={{item.path}}
   with_items:
@@ -13,11 +16,7 @@
     - { path: "{{symfony2_project_root}}/shared/web/uploads" }
 
 - name: Pull sources from the repository.
-  git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{symfony2_project_release}} version={{symfony2_project_branch}} accept_hostkey=yes
-
-- name: Clean out versioning.
-  file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/.git
-  when: symfony2_project_clean_versioning == true
+  git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{symfony2_project_release}} version={{symfony2_project_branch}} accept_hostkey=yes depth={{symfony2_project_git_clone_depth}}
 
 # will be replaced with symlink
 - name: Ensure logs directory is not present.
@@ -37,43 +36,23 @@
   file: state=link src={{symfony2_project_root}}/shared/app/config path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config
   when: config_dir.stat.exists == false
 
-- name: Check if shared/app/config/parameters.ini exists.
-  stat: path={{symfony2_project_root}}/shared/app/config/parameters.ini
-  register: parameters_ini
+- name: Check if parameters file exists.
+  stat: path={{symfony2_project_root}}/shared/app/config/{{symfony2_project_parameters_file}}
+  register: symfony_parameters
 
-- name: Create symlink for app/config/parameters.ini from shared directory.
-  shell: ln -s {{symfony2_project_root}}/shared/app/config/parameters.ini {{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini creates={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini
-  when: parameters_ini.stat.exists
+- name: Create symlink for parameters file from shared directory.
+  file: state=link src={{symfony2_project_root}}/shared/app/config/{{symfony2_project_parameters_file}} path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/{{symfony2_project_parameters_file}} creates={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/{{symfony2_project_parameters_file}}
+  when: symfony_parameters.stat.exists
 
-- name: Check if composer exists.
-  stat: path={{symfony2_project_composer_path}}/composer.phar
-  register: composer_file
-  when: symfony2_project_maintain_composer == true
+- include: composer.yml
 
-- name: Install composer.
-  get_url: url=https://getcomposer.org/composer.phar dest={{symfony2_project_composer_path}} mode=0755 validate_certs=no
-  when: symfony2_project_maintain_composer == true and composer_file.stat.exists == false
-
-- name: Update composer if already exists.
-  shell: "{{symfony2_project_composer_path}}/composer.phar selfupdate"
-  when: symfony2_project_maintain_composer == true and composer_file.stat.exists == true
-
-- name: Run composer install.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && export SYMFONY_ENV={{symfony2_project_env}} && {{symfony2_project_php_path}} {{symfony2_project_composer_path}}/composer.phar install {{symfony2_project_composer_opts}}
-
-- name: Dump assets.
+- name: Dump assetic assets.
   shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} app/console assetic:dump --env={{symfony2_project_env}} {{symfony2_project_console_opts}}
+  when: composer_content.stdout.find('assetic-bundle') != -1
 
-- name: Run migrations.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{symfony2_project_php_path}} app/console doctrine:migrations:migrate -n; fi
-  when: symfony2_fire_migrations == true
+- include: migrations.yml
 
-- name: Run mongodb schema update.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep mongodb-odm composer.json); then {{symfony2_project_php_path}} app/console doctrine:mongodb:schema:update --no-interaction; fi
-  when: symfony2_fire_schema_update == true
-
-- name: Create symlink.
+- name: Create symlink for release.
   file: state=link src={{symfony2_project_root}}/releases/{{symfony2_project_release}} path={{symfony2_project_root}}/current
 
-- name: Cleanup releases.
-  shell: cd {{symfony2_project_root}}/releases && ls -t1 | tail -n +$(({{symfony2_project_keep_releases}}+1)) | xargs -n1 rm -rf
+- include: clean_releases.yml

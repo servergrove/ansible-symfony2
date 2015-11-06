@@ -1,0 +1,21 @@
+---
+- name: Check if composer exists.
+  stat: path={{symfony2_project_composer_path}}
+  register: composer_file
+  when: symfony2_project_manage_composer == True
+
+- name: Install composer.
+  get_url: url=https://getcomposer.org/composer.phar dest={{symfony2_project_composer_path}} mode=0755 validate_certs=no
+  when: symfony2_project_manage_composer == True && composer_file.stat.exists == False
+
+- name: Update composer if already exists.
+  shell: "{{symfony2_project_composer_path}} selfupdate"
+  when: composer_file.stat.exists == True && symfony2_manage_composer == True
+
+- name: Link composer to project dir.
+  file: state=link src={{symfony2_project_composer_path}} path={{symfony2_project_root}}/releases/{{symfony2_project_release}}_{{symfony2_project_branch}}/composer
+  when: symfony2_project_manage_composer == True
+
+- name: Run composer install.
+  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}}_{{symfony2_project_branch}} && export SYMFONY_ENV={{symfony2_project_env}}; {{symfony2_project_php_path}} {{symfony2_project_composer_path}} install {{symfony2_project_composer_opts}}
+  when: symfony2_project_enable_post_cmd == True

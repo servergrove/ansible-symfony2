@@ -5,9 +5,12 @@ symfony2_project_release: ~
 symfony2_project_branch: master
 symfony2_project_php_path: php
 symfony2_project_keep_releases: 5
-symfony2_project_clean_versioning: true
+symfony2_project_git_clone_depth: 1
 symfony2_project_console_opts: ''
-symfony2_project_maintain_composer: true
 symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
-symfony2_fire_schema_update: false
-symfony2_fire_migrations: false
+symfony2_project_parameters_file: parameters.yml
+
+symfony2_project_manage_composer: True
+symfony2_project_enable_post_cmd: True
+symfony2_project_fire_schema_update: False
+symfony2_project_fire_migrations: False

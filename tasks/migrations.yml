@@ -1,0 +1,8 @@
+---
+- name: Run migrations.
+  shell: {{symfony2_project_php_path}} {{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/console doctrine:migrations:migrate -n
+  when: symfony2_project_fire_migrations == true && composer_content.stdout.find('mongodb-odm') != -1
+
+- name: Run mongodb schema update.
+  shell: {{symfony2_project_php_path}} {{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/console doctrine:mongodb:schema:update --no-interaction
+  when: symfony2_project_fire_schema_update == true  && composer_content.stdout.find('doctrine-migrations-bundle') != -1
