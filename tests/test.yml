@@ -1,15 +1,15 @@
 ---
 - hosts: localhost
-  remote_user: root
+#  remote_user: root
   roles:
     - geerlingguy.php
     - ansible-symfony2
 
   vars:
     # necessary project vars
-    symfony_project_root: /test_app
+    symfony_project_root: /tmp/test_app
     symfony_project_name: travis-test
-    symfony_project_composer_path: /test_app/shared/composer.phar
+    symfony_project_composer_path: /tmp/test_app/shared/composer.phar
     symfony_project_repo: https://github.com/symfony/symfony-standard.git
     symfony_project_env: prod
 
