@@ -10,7 +10,7 @@
     symfony2_project_name: travis-test
     symfony2_project_composer_path: /test_app/shared
     symfony2_project_repo: https://github.com/symfony/symfony-standard.git
-    symfony2_project_branch: "2.6"
+    symfony2_project_branch: "2.7"
     symfony2_project_php_path: php
     symfony2_project_env: prod
     symfony2_project_console_opts: '--no-debug'
