@@ -10,9 +10,6 @@
     - { path: "{{symfony_shared_dir}}/app/config" }
     - { path: "{{symfony_shared_dir}}/app/logs" }
 
-#- name: Create/prepare additionaly configured web folders
-#  file: state=directory path={{item.path}}
-
 - name: Pull sources from the repository.
   git: repo={{symfony_project_repo}} dest={{symfony_current_release_dir}} version={{symfony_project_branch}} accept_hostkey=yes depth={{symfony_project_git_clone_depth}}
 
