@@ -1,79 +1,56 @@
 ---
 # tasks file for symfony2
-- set_fact: symfony2_project_release={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
-  when: symfony2_project_release == None
+- include: facts.yml
 
-- name: Create/prepare directories for release and shared data.
+- name: Create/prepare necessary directories for release and shared data.
   file: state=directory path={{item.path}}
   with_items:
-    - { path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}" }
-    - { path: "{{symfony2_project_root}}/shared" }
-    - { path: "{{symfony2_project_root}}/shared/app/config" }
-    - { path: "{{symfony2_project_root}}/shared/app/logs" }
-    - { path: "{{symfony2_project_root}}/shared/web/uploads" }
+    - { path: "{{symfony_current_release_dir}}" }
+    - { path: "{{symfony_shared_dir}}" }
+    - { path: "{{symfony_shared_dir}}/app/config" }
+    - { path: "{{symfony_shared_dir}}/app/logs" }
+
+#- name: Create/prepare additionaly configured web folders
+#  file: state=directory path={{item.path}}
 
 - name: Pull sources from the repository.
-  git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{symfony2_project_release}} version={{symfony2_project_branch}} accept_hostkey=yes
+  git: repo={{symfony_project_repo}} dest={{symfony_current_release_dir}} version={{symfony_project_branch}} accept_hostkey=yes depth={{symfony_project_git_clone_depth}}
 
-- name: Clean out versioning.
-  file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/.git
-  when: symfony2_project_clean_versioning == true
+# read project's composer.json and store output
+- shell: cat {{symfony_current_release_dir}}/composer.json
+  register: composer_content
+
+- include: "{{ symfony_project_post_folder_creation_tasks | default('empty.yml') }}"
 
 # will be replaced with symlink
 - name: Ensure logs directory is not present.
-  file: state=absent path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs
+  file: state=absent path="{{symfony_current_release_dir}}/app/logs"
 
 - name: Create symlinks to shared directories.
-  file: state=link src={{item.src}} path={{item.path}}
+  file: state=link src="{{symfony_shared_dir}}{{item.src}}" path="{{symfony_current_release_dir}}{{item.path}}"
   with_items:
-    - { src: "{{symfony2_project_root}}/shared/app/logs", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/logs" }
-    - { src: "{{symfony2_project_root}}/shared/web/uploads", path: "{{symfony2_project_root}}/releases/{{symfony2_project_release}}/web/uploads" }
+    - { src: "/app/logs", path: "/app/logs" }
 
-- name: Check if config dir exists.
-  stat: path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config
-  register: config_dir
+- include: config.yml
 
-- name: Link configs dir if not yet exists.
-  file: state=link src={{symfony2_project_root}}/shared/app/config path={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config
-  when: config_dir.stat.exists == false
+- include: composer.yml
 
-- name: Check if shared/app/config/parameters.ini exists.
-  stat: path={{symfony2_project_root}}/shared/app/config/parameters.ini
-  register: parameters_ini
+- include: "{{ symfony_project_pre_cache_warmup_tasks | default('empty.yml') }}"
 
-- name: Create symlink for app/config/parameters.ini from shared directory.
-  shell: ln -s {{symfony2_project_root}}/shared/app/config/parameters.ini {{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini creates={{symfony2_project_root}}/releases/{{symfony2_project_release}}/app/config/parameters.ini
-  when: parameters_ini.stat.exists
+- include: cache.yml
 
-- name: Check if composer exists.
-  stat: path={{symfony2_project_composer_path}}/composer.phar
-  register: composer_file
-  when: symfony2_project_maintain_composer == true
+- include: assets.yml
 
-- name: Install composer.
-  get_url: url=https://getcomposer.org/composer.phar dest={{symfony2_project_composer_path}} mode=0755 validate_certs=no
-  when: symfony2_project_maintain_composer == true and composer_file.stat.exists == false
+- include: migrations.yml
 
-- name: Update composer if already exists.
-  shell: "{{symfony2_project_composer_path}}/composer.phar selfupdate"
-  when: symfony2_project_maintain_composer == true and composer_file.stat.exists == true
+- name: create release file
+  copy: content="{{symfony_current_release}}" dest="{{symfony_current_release_dir}}/RELEASE" mode=644
 
-- name: Run composer install.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && export SYMFONY_ENV={{symfony2_project_env}} && {{symfony2_project_php_path}} {{symfony2_project_composer_path}}/composer.phar install {{symfony2_project_composer_opts}}
+- include: "{{ symfony_project_pre_live_switch_tasks | default('empty.yml') }}"
 
-- name: Dump assets.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && {{symfony2_project_php_path}} app/console assetic:dump --env={{symfony2_project_env}} {{symfony2_project_console_opts}}
+- name: Create symlink for release.
+  file: state=link src="{{symfony_current_release_dir}}" path="{{symfony_project_root}}/current"
 
-- name: Run migrations.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep doctrine-migrations-bundle composer.json); then {{symfony2_project_php_path}} app/console doctrine:migrations:migrate -n; fi
-  when: symfony2_fire_migrations == true
+- include: "{{ symfony_project_post_live_switch_tasks | default('empty.yml') }}"
 
-- name: Run mongodb schema update.
-  shell: cd {{symfony2_project_root}}/releases/{{symfony2_project_release}} && if $(grep mongodb-odm composer.json); then {{symfony2_project_php_path}} app/console doctrine:mongodb:schema:update --no-interaction; fi
-  when: symfony2_fire_schema_update == true
-
-- name: Create symlink.
-  file: state=link src={{symfony2_project_root}}/releases/{{symfony2_project_release}} path={{symfony2_project_root}}/current
-
-- name: Cleanup releases.
-  shell: cd {{symfony2_project_root}}/releases && ls -t1 | tail -n +$(({{symfony2_project_keep_releases}}+1)) | xargs -n1 rm -rf
+- include: clean_releases.yml

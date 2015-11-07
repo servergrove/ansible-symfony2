@@ -3,7 +3,7 @@
 
 Ansible role to easily deploy Symfony2 applications.
 It will clone a git repository, a specific branch or a tag, download and run composer install, and run assetic:dump when finished.
-The resulting directory structure is similar to what capifony creates:
+The resulting directory structure is similar to what capifony/capistrano creates:
 
 ```
 project
@@ -45,20 +45,24 @@ This playbook is taken from the travis testcase. You can always pass these value
     - ansible-symfony2
 
   vars:
-    symfony2_project_root: /test_app
-    symfony2_project_name: travis-test
-    symfony2_project_composer_path: /test_app/shared
-    symfony2_project_repo: https://github.com/symfony/symfony-standard.git
-    symfony2_project_branch: "2.6"
-    symfony2_project_php_path: php
-    symfony2_project_env: prod
-    symfony2_project_console_opts: '--no-debug'
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
-    symfony2_project_keep_releases: 5
-    symfony2_project_clean_versioning: true
+    symfony_project_root: /tmp/test_app
+    symfony_project_name: travis-test
+    symfony_project_composer_path: /tmp/test_app/shared/composer.phar
+    symfony_project_repo: https://github.com/symfony/symfony-standard.git
+    symfony_project_env: prod
+
+    symfony_project_console_opts: '--no-debug'
+    symfony_project_keep_releases: 5
+
+    symfony_project_branch: "2.6"
+    symfony_project_php_path: php
+    symfony_project_keep_releases: 5
+
+    symfony_project_manage_composer: True
+    symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
 ```
 
-Commandline: ```~$ ansible-playbook -i inventory --extra-vars "symfony2_project_release=20150417142505,symfony2_project_branch=master" test.yml```
+Commandline: ```~$ ansible-playbook -i inventory --extra-vars "symfony_project_release=20150417142505,symfony_project_branch=master" test.yml```
 
 ## Role Variables
 
@@ -69,20 +73,35 @@ These are the possible role variables - you only need to have a small set define
 ```yaml
 ---
 - vars:
-    symfony2_project_root: Path where application will be deployed on server.
-    symfony2_project_name: Name of project.
-    symfony2_project_composer_path: path where composer.phar will be stored (e.g. project_root/shared)
-    symfony2_project_repo: URL of git repository.
-    symfony2_project_release: Release number, can be numeric, we recommend to set it to release date/time, 20140327100911
-    symfony2_project_branch: git branch to deploy.
-    symfony2_project_php_path: /usr/local/php54/bin/php
-    symfony2_project_env: prod
-    symfony2_project_console_opts: ''
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
-    symfony2_project_keep_releases: 5
-    symfony2_project_clean_versioning: true
-    symfony2_fire_schema_update: false # Runs doctrine:mongodb:schema:update
-    symfony2_fire_migrations: false # Runs doctrine migrations script 
+    # necessary project vars
+    symfony_project_root: Path where application will be deployed on server.
+    symfony_project_composer_path: path where composer.phar will be stored (e.g. project_root/shared)
+    symfony_project_repo: URL of git repository.
+    symfony_project_release: Release number, can be numeric, we recommend to set it to release date/time, 20140327100911
+    symfony_project_env: prod
+
+    # optional parameters, covered by defaults
+    symfony_project_post_folder_creation_tasks: task hook after folder creation
+    symfony_project_pre_cache_warmup_tasks: after cache warmup
+    symfony_project_pre_live_switch_tasks: before live symlink is switched
+    symfony_project_post_live_switch_tasks: after live symlink is switched
+
+    symfony_project_branch: git branch, commit hash or version tag to deploy - defaults to master
+    symfony_project_php_path: php
+    symfony_project_keep_releases: 5
+    symfony_project_git_clone_depth: 1 # uses git shallow copy
+    symfony_project_console_opts: ''
+    symfony_project_parameters_file: parameters.yml # optional fixed parameters file in shared
+    symfony_project_cache_command: cache:warmup
+
+    symfony_project_manage_composer: True
+    symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
+    symfony_project_composer_run_install: True
+
+    symfony_project_enable_cache_warmup: True warmup symfony cache, check out cache command!
+    symfony_project_fire_schema_update: False # rund mongodb schema update if installed
+    symfony_project_fire_migrations: run doctrine migrations, if installed
+    symfony_project_symlink_assets: run assets:create with symlink options
 ```
 
 ### Role variable defaults
@@ -92,16 +111,44 @@ As you can see, the release number default is the current date/time with seconds
 ```yaml
 ---
 - vars
-    symfony2_project_release: <datetime> # internally replaced with YmdHis
-    symfony2_project_branch: master
-    symfony2_project_php_path: /usr/bin/php
-    symfony2_project_keep_releases: 5
-    symfony2_project_clean_versioning: true
-    symfony2_project_console_opts: ''
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
-    symfony2_fire_schema_update: false
-    symfony2_fire_migrations: false
+    symfony_project_release: <datetime> # internally replaced with YmdHis
+    symfony_project_branch: master
+    symfony_project_php_path: /usr/bin/php
+    symfony_project_keep_releases: 5
+    symfony_project_git_clone_depth: 1
+    symfony_project_console_opts: ''
+    symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
+    symfony_project_fire_migrations: False
+    symfony_project_symlink_assets: True
 ```
+
+## hooks
+If you need any more tasks and stuff in your deployment, you now have the option to include hook scripts.
+In my projects there's often e.g. a gulp task that has to be started before finishing the release. You're also free to create more folders yourself or do whatever you need.
+As an additional goodie, you can use the internal dynamically created facts from main role:
+
+```
+  symfony_project_release # release timestamp
+  symfony_current_release # release name
+  symfony_current_release_dir # fully qualified path to release
+  symfony_shared_dir # shared folder base path
+  symfony_console # fully qualified console command path
+```
+possible hooks:
+
+```
+  symfony_project_post_folder_creation_tasks: task hook after folder creation
+  symfony_project_pre_cache_warmup_tasks: after cache warmup
+  symfony_project_pre_live_switch_tasks: before live symlink is switched
+  symfony_project_post_live_switch_tasks: after live symlink is switched
+```
+
+These hooks trigger an include when defined.
+Define hooks:
+```
+  symfony_project_post_folder_creation_tasks: "{{ playbook_dir }}/hooks/post_folder_creation.yml"
+```
+The "hooks" dir should be in your deployment project as a subfolder. I'd recommend to use this name as a convention. Also it's convinient to use the name of the hook task as a yml name.
 
 ## Dependencies
 

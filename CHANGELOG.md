@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.0
+reworked and more flexible configuration
+
+* creates release version in a file per release
+* more control over shared folders with additional config options
+* possibilities for shallow git copy
+* optional cache warmup for sf2
+* added tags for specific tasks to allow e.g. cache flush only in later versions
+* minified composer.json read overhead
+* allow for role hooks
+
+## v1.0
+
+* created stable release for later refactoring
+
 ## v0.3
 
 * working travis-ci tests
