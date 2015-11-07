@@ -4,9 +4,11 @@ python: "2.7"
 
 sudo: false
 
-#before_install:
-  # Make sure everything's up to date.
-#  - sudo apt-get update -qq
+addons:
+  apt:
+    packages:
+    - php5-cli
+    - php5-common
 
 install:
   # Install Ansible.

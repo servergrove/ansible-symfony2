@@ -1,7 +1,6 @@
 ---
 - hosts: localhost
   roles:
-    - geerlingguy.php
     - ansible-symfony2
 
   vars:
