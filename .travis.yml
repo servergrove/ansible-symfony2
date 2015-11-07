@@ -6,9 +6,9 @@ php:
 
 sudo: false
 
-before_install:
+#before_install:
   # Make sure everything's up to date.
-  - sudo apt-get update -qq
+#  - sudo apt-get update -qq
 
 install:
   # Install Ansible.
