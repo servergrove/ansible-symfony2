@@ -1,0 +1,4 @@
+---
+- name: Cleanup releases.
+  shell: "cd {{symfony_project_root}}/releases && ls -t1 | tail -n +$(({{symfony_project_keep_releases}}+1)) | xargs -n1 rm -rf"
+  when: symfony_project_keep_releases
