@@ -90,6 +90,7 @@ These are the possible role variables - you only need to have a small set define
     symfony_project_php_path: php
     symfony_project_keep_releases: 5
     symfony_project_git_clone_depth: 1 # uses git shallow copy
+    symfony_project_github_oauth_token: Auth token for github rate limits
     symfony_project_console_opts: ''
     symfony_project_parameters_file: parameters.yml # optional fixed parameters file in shared
     symfony_project_cache_command: cache:warmup
@@ -127,7 +128,8 @@ If you need any more tasks and stuff in your deployment, you now have the option
 In my projects there's often e.g. a gulp task that has to be started before finishing the release. You're also free to create more folders yourself or do whatever you need.
 As an additional goodie, you can use the internal dynamically created facts from main role:
 
-```
+```yaml
+---
   symfony_project_release # release timestamp
   symfony_current_release # release name
   symfony_current_release_dir # fully qualified path to release
@@ -136,7 +138,8 @@ As an additional goodie, you can use the internal dynamically created facts from
 ```
 possible hooks:
 
-```
+```yaml
+---
   symfony_project_post_folder_creation_tasks: task hook after folder creation
   symfony_project_pre_cache_warmup_tasks: after cache warmup
   symfony_project_pre_live_switch_tasks: before live symlink is switched
@@ -145,10 +148,40 @@ possible hooks:
 
 These hooks trigger an include when defined.
 Define hooks:
-```
-  symfony_project_post_folder_creation_tasks: "{{ playbook_dir }}/hooks/post_folder_creation.yml"
+```yaml
+  symfony_project_post_folder_creation_tasks: "{{playbook_dir}}/hooks/post_folder_creation.yml"
 ```
 The "hooks" dir should be in your deployment project as a subfolder. I'd recommend to use this name as a convention. Also it's convinient to use the name of the hook task as a yml name.
+
+## hook examples
+These examples can be found in the package's hooks dir.
+
+### php-fpm process restart
+E.g. restart php-fpm after successfully finishing deployment.
+This is much easier to maintain for different environments.
+
+Create ```<your deployment>/hooks/post_live_switch.yml```:
+
+```yaml
+---
+- name: hook | Restart php-fpm
+  service: name=php5-fpm state=restarted
+  when: symfony_project_env == "prod"
+```
+
+### create and maintain web/downloads folder
+Example for managing additional directories
+
+Create ```<your deployment>/hooks/post_folder_creation.yml```:
+
+```yaml
+---
+- name: hook | Create web/uploads folder.
+  file: state=directory path={{symfony_shared_dir}}/web/uploads
+
+- name: hook | Symlink to release.
+  file: state=link src="{{symfony_shared_dir}}/web/uploads" path="{{symfony_current_release_dir}}/web/uploads"
+```
 
 ## Dependencies
 
@@ -156,7 +189,13 @@ None
 
 ## Testing
 
-The deployment contains a basic test, executed by travis. If you want to locally test the role, have a look into ```.travis.yml``` for the exceution statements and (maybe) remove the ```geerlingguy.php ``` from ```tests/test.yml``` if you have a local php executable (needed for composer install and symfony console scripts).
+The deployment contains a basic test, executed by travis. If you want to locally test the role, have a look into ```.travis.yml``` for the exceution statements. Make sure you have a local php executable (needed for composer install and symfony console scripts).
+Add a file ```ansible.cfg```to your deployment project folder with contents:
+
+```
+[defaults]
+roles_path = ../
+```
 
 The test setup looks like this:
 

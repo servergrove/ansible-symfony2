@@ -1,0 +1,6 @@
+---
+- name: hook | Create web/uploads folder.
+  file: state=directory path={{symfony_shared_dir}}/web/uploads
+
+- name: hook | Symlink to release.
+  file: state=link src="{{symfony_shared_dir}}/web/uploads" path="{{symfony_current_release_dir}}/web/uploads"

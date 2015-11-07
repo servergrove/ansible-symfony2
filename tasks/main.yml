@@ -14,7 +14,8 @@
   git: repo={{symfony_project_repo}} dest={{symfony_current_release_dir}} version={{symfony_project_branch}} accept_hostkey=yes depth={{symfony_project_git_clone_depth}}
 
 # read project's composer.json and store output
-- shell: cat {{symfony_current_release_dir}}/composer.json
+- name: Read composer.json
+  shell: cat {{symfony_current_release_dir}}/composer.json
   register: composer_content
 
 - include: "{{ symfony_project_post_folder_creation_tasks | default('empty.yml') }}"

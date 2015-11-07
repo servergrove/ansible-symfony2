@@ -1,0 +1,4 @@
+---
+- name: hook | Restart php-fpm
+  service: name=php5-fpm state=restarted
+  when: symfony_project_env == "prod"
