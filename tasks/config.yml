@@ -1,0 +1,16 @@
+---
+- name: Check if config dir exists.
+  stat: path={{symfony_current_release_dir}}/app/config
+  register: config_dir
+
+- name: Link configs dir if not yet exists.
+  file: state=link src={{symfony_shared_dir}}/app/config path={{symfony_current_release_dir}}/app/config
+  when: config_dir.stat.exists == false
+
+- name: Check if parameters file exists.
+  stat: path={{symfony_shared_dir}}/app/config/{{symfony_project_parameters_file}}
+  register: symfony_parameters
+
+- name: Create symlink for parameters file from shared directory.
+  file: state=link src={{symfony_project_root}}/shared/app/config/{{symfony_project_parameters_file}} path={{symfony_current_release_dir}}/app/config/{{symfony_project_parameters_file}} creates={{symfony_current_release_dir}}/app/config/{{symfony_project_parameters_file}}
+  when: symfony_parameters.stat.exists

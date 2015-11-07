@@ -1,65 +1,58 @@
 ---
 # tasks file for symfony2
-- set_fact: symfony2_project_release={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
-  when: symfony2_project_release == None
+- include: facts.yml
 
-# simplify release dir
-- set_fact: current_release_dir={{symfony2_project_release}}_{{symfony2_project_branch}}
-
-# build console command
-- set_fact: symfony_console={{symfony2_project_root}}/releases/{{current_release_dir}}/app/console
-
-- name: Create/prepare directories for release and shared data.
+- name: Create/prepare necessary directories for release and shared data.
   file: state=directory path={{item.path}}
   with_items:
-    - { path: "{{symfony2_project_root}}/releases/{{current_release_dir}}" }
-    - { path: "{{symfony2_project_root}}/shared" }
-    - { path: "{{symfony2_project_root}}/shared/app/config" }
-    - { path: "{{symfony2_project_root}}/shared/app/logs" }
-    - { path: "{{symfony2_project_root}}/shared/web/uploads" }
+    - { path: "{{symfony_current_release_dir}}" }
+    - { path: "{{symfony_shared_dir}}" }
+    - { path: "{{symfony_shared_dir}}/app/config" }
+    - { path: "{{symfony_shared_dir}}/app/logs" }
+    - { path: "{{symfony_shared_dir}}/web/uploads" }
+
+#- name: Create/prepare additionaly configured web folders
+#  file: state=directory path={{item.path}}
 
 - name: Pull sources from the repository.
-  git: repo={{symfony2_project_repo}} dest={{symfony2_project_root}}/releases/{{current_release_dir}} version={{symfony2_project_branch}} accept_hostkey=yes depth={{symfony2_project_git_clone_depth}}
+  git: repo={{symfony_project_repo}} dest={{symfony_current_release_dir}} version={{symfony_project_branch}} accept_hostkey=yes depth={{symfony_project_git_clone_depth}}
 
 # read project's composer.json and store output
-- shell: cat {{symfony2_project_root}}/releases/{{current_release_dir}}/composer.json
+- shell: cat {{symfony_current_release_dir}}/composer.json
   register: composer_content
+
+- include: "{{ symfony_project_post_folder_creation_tasks | default('empty.yml') }}"
 
 # will be replaced with symlink
 - name: Ensure logs directory is not present.
-  file: state=absent path={{symfony2_project_root}}/releases/{{current_release_dir}}/app/logs
+  file: state=absent path="{{symfony_current_release_dir}}/app/logs"
 
 - name: Create symlinks to shared directories.
-  file: state=link src={{item.src}} path={{item.path}}
+  file: state=link src="{{symfony_shared_dir}}{{item.src}}" path="{{symfony_current_release_dir}}{{item.path}}"
   with_items:
-    - { src: "{{symfony2_project_root}}/shared/app/logs", path: "{{symfony2_project_root}}/releases/{{current_release_dir}}/app/logs" }
-    - { src: "{{symfony2_project_root}}/shared/web/uploads", path: "{{symfony2_project_root}}/releases/{{current_release_dir}}/web/uploads" }
+    - { src: "/app/logs", path: "/app/logs" }
+    - { src: "/web/uploads", path: "/web/uploads" }
 
-- name: Check if config dir exists.
-  stat: path={{symfony2_project_root}}/releases/{{current_release_dir}}/app/config
-  register: config_dir
-
-- name: Link configs dir if not yet exists.
-  file: state=link src={{symfony2_project_root}}/shared/app/config path={{symfony2_project_root}}/releases/{{current_release_dir}}/app/config
-  when: config_dir.stat.exists == false
-
-- name: Check if parameters file exists.
-  stat: path={{symfony2_project_root}}/shared/app/config/{{symfony2_project_parameters_file}}
-  register: symfony_parameters
-
-- name: Create symlink for parameters file from shared directory.
-  file: state=link src={{symfony2_project_root}}/shared/app/config/{{symfony2_project_parameters_file}} path={{symfony2_project_root}}/releases/{{current_release_dir}}/app/config/{{symfony2_project_parameters_file}} creates={{symfony2_project_root}}/releases/{{current_release_dir}}/app/config/{{symfony2_project_parameters_file}}
-  when: symfony_parameters.stat.exists
+- include: config.yml
 
 - include: composer.yml
 
-- name: Dump assetic assets.
-  shell: cd {{symfony2_project_root}}/releases/{{current_release_dir}} && {{symfony2_project_php_path}} {{symfony_console}} assetic:dump --env={{symfony2_project_env}} {{symfony2_project_console_opts}}
-  when: composer_content.stdout.find('assetic-bundle') != -1
+- include: "{{ symfony_project_pre_cache_warmup_tasks | default('empty.yml') }}"
+
+- include: cache.yml
+
+- include: assets.yml
 
 - include: migrations.yml
 
+- name: create release file
+  copy: content="{{symfony_current_release}}" dest="{{symfony_current_release_dir}}/RELEASE" mode=644
+
+- include: "{{ symfony_project_pre_live_switch_tasks | default('empty.yml') }}"
+
 - name: Create symlink for release.
-  file: state=link src={{symfony2_project_root}}/releases/{{current_release_dir}} path={{symfony2_project_root}}/current
+  file: state=link src="{{symfony_current_release_dir}}" path="{{symfony_project_root}}/current"
+
+- include: "{{ symfony_project_post_live_switch_tasks | default('empty.yml') }}"
 
 - include: clean_releases.yml

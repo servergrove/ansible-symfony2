@@ -6,15 +6,15 @@
     - ansible-symfony2
 
   vars:
-    symfony2_project_root: /test_app
-    symfony2_project_name: travis-test
-    symfony2_project_composer_path: /test_app/shared
-    symfony2_project_repo: https://github.com/symfony/symfony-standard.git
-    symfony2_project_branch: "2.7"
-    symfony2_project_php_path: php
-    symfony2_project_env: prod
-    symfony2_project_console_opts: '--no-debug'
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader'
-    symfony2_project_keep_releases: 5
-    symfony2_project_clean_versioning: true
-    symfony2_fire_migrations: true
+    symfony_project_root: /test_app
+    symfony_project_name: travis-test
+    symfony_project_composer_path: /test_app/shared
+    symfony_project_repo: https://github.com/symfony/symfony-standard.git
+    symfony_project_branch: "2.7"
+    symfony_project_php_path: php
+    symfony_project_env: prod
+    symfony_project_console_opts: '--no-debug'
+    symfony_project_composer_opts: '--no-dev --optimize-autoloader'
+    symfony_project_keep_releases: 5
+    symfony_project_clean_versioning: true
+    symfony_fire_migrations: true

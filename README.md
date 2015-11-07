@@ -45,20 +45,20 @@ This playbook is taken from the travis testcase. You can always pass these value
     - ansible-symfony2
 
   vars:
-    symfony2_project_root: /test_app
-    symfony2_project_name: travis-test
-    symfony2_project_composer_path: /test_app/shared
-    symfony2_project_repo: https://github.com/symfony/symfony-standard.git
-    symfony2_project_branch: "2.6"
-    symfony2_project_php_path: php
-    symfony2_project_env: prod
-    symfony2_project_console_opts: '--no-debug'
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
-    symfony2_project_keep_releases: 5
-    symfony2_project_clean_versioning: true
+    symfony_project_root: /test_app
+    symfony_project_name: travis-test
+    symfony_project_composer_path: /test_app/shared
+    symfony_project_repo: https://github.com/symfony/symfony-standard.git
+    symfony_project_branch: "2.6"
+    symfony_project_php_path: php
+    symfony_project_env: prod
+    symfony_project_console_opts: '--no-debug'
+    symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
+    symfony_project_keep_releases: 5
+    symfony_project_clean_versioning: true
 ```
 
-Commandline: ```~$ ansible-playbook -i inventory --extra-vars "symfony2_project_release=20150417142505,symfony2_project_branch=master" test.yml```
+Commandline: ```~$ ansible-playbook -i inventory --extra-vars "symfony_project_release=20150417142505,symfony_project_branch=master" test.yml```
 
 ## Role Variables
 
@@ -69,20 +69,20 @@ These are the possible role variables - you only need to have a small set define
 ```yaml
 ---
 - vars:
-    symfony2_project_root: Path where application will be deployed on server.
-    symfony2_project_name: Name of project.
-    symfony2_project_composer_path: path where composer.phar will be stored (e.g. project_root/shared)
-    symfony2_project_repo: URL of git repository.
-    symfony2_project_release: Release number, can be numeric, we recommend to set it to release date/time, 20140327100911
-    symfony2_project_branch: git branch to deploy.
-    symfony2_project_php_path: /usr/local/php54/bin/php
-    symfony2_project_env: prod
-    symfony2_project_console_opts: ''
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
-    symfony2_project_keep_releases: 5
-    symfony2_project_clean_versioning: true
-    symfony2_fire_schema_update: false # Runs doctrine:mongodb:schema:update
-    symfony2_fire_migrations: false # Runs doctrine migrations script 
+    symfony_project_root: Path where application will be deployed on server.
+    symfony_project_name: Name of project.
+    symfony_project_composer_path: path where composer.phar will be stored (e.g. project_root/shared)
+    symfony_project_repo: URL of git repository.
+    symfony_project_release: Release number, can be numeric, we recommend to set it to release date/time, 20140327100911
+    symfony_project_branch: git branch to deploy.
+    symfony_project_php_path: /usr/local/php54/bin/php
+    symfony_project_env: prod
+    symfony_project_console_opts: ''
+    symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
+    symfony_project_keep_releases: 5
+    symfony_project_clean_versioning: true
+    symfony_fire_schema_update: false # Runs doctrine:mongodb:schema:update
+    symfony_fire_migrations: false # Runs doctrine migrations script 
 ```
 
 ### Role variable defaults
@@ -92,15 +92,15 @@ As you can see, the release number default is the current date/time with seconds
 ```yaml
 ---
 - vars
-    symfony2_project_release: <datetime> # internally replaced with YmdHis
-    symfony2_project_branch: master
-    symfony2_project_php_path: /usr/bin/php
-    symfony2_project_keep_releases: 5
-    symfony2_project_clean_versioning: true
-    symfony2_project_console_opts: ''
-    symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
-    symfony2_fire_schema_update: false
-    symfony2_fire_migrations: false
+    symfony_project_release: <datetime> # internally replaced with YmdHis
+    symfony_project_branch: master
+    symfony_project_php_path: /usr/bin/php
+    symfony_project_keep_releases: 5
+    symfony_project_clean_versioning: true
+    symfony_project_console_opts: ''
+    symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
+    symfony_fire_schema_update: false
+    symfony_fire_migrations: false
 ```
 
 ## Dependencies

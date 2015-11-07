@@ -1,16 +1,31 @@
 ---
-# defaults file for symfony2
+# necessary project vars
 
-symfony2_project_release: ~
-symfony2_project_branch: master
-symfony2_project_php_path: php
-symfony2_project_keep_releases: 5
-symfony2_project_git_clone_depth: 1
-symfony2_project_console_opts: ''
-symfony2_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
-symfony2_project_parameters_file: parameters.yml
+#symfony_project_root: ''
+#symfony_project_composer_path: ''
+#symfony_project_repo: ''
+#symfony_project_env: ''
 
-symfony2_project_manage_composer: True
-symfony2_project_enable_post_cmd: True
-symfony2_project_fire_schema_update: False
-symfony2_project_fire_migrations: False
+# hooks
+symfony_project_post_folder_creation_tasks: ~
+symfony_project_pre_cache_warmup_tasks: ~
+symfony_project_pre_live_switch_tasks: ~
+symfony_project_post_live_switch_tasks: ~
+
+symfony_project_release: ~
+symfony_project_branch: master
+symfony_project_php_path: php
+symfony_project_keep_releases: 5
+symfony_project_git_clone_depth: 1
+symfony_project_console_opts: ''
+symfony_project_parameters_file: parameters.yml
+symfony_project_cache_command: cache:warmup
+
+symfony_project_manage_composer: True
+symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
+symfony_project_composer_run_install: True
+
+symfony_project_enable_cache_warmup: True
+symfony_project_fire_schema_update: False
+symfony_project_fire_migrations: False
+symfony_project_symlink_assets: True

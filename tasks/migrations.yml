@@ -1,8 +1,8 @@
 ---
 - name: Run migrations.
-  action: shell {{symfony2_project_php_path}} {{symfony_console}} doctrine:migrations:migrate -n
-  when: symfony2_project_fire_migrations == true and composer_content.stdout.find('mongodb-odm') != -1
+  action: shell {{symfony_project_php_path}} {{symfony_console}} doctrine:migrations:migrate -n
+  when: symfony_project_fire_migrations == true and composer_content.stdout.find('mongodb-odm') != -1
 
 - name: Run mongodb schema update.
-  action: shell {{symfony2_project_php_path}} {{symfony_console}} doctrine:mongodb:schema:update --no-interaction
-  when: symfony2_project_fire_schema_update == true and composer_content.stdout.find('doctrine-migrations-bundle') != -1
+  action: shell {{symfony_project_php_path}} {{symfony_console}} doctrine:mongodb:schema:update --no-interaction
+  when: symfony_project_fire_schema_update == true and composer_content.stdout.find('doctrine-migrations-bundle') != -1
