@@ -6,7 +6,8 @@ sudo: false
 addons:
   apt:
     packages:
-    - php5-fpm
+    - php5-common
+    - php5-cli
 
 install:
   # Install Ansible.

@@ -18,7 +18,7 @@
 
     symfony_project_release: ~
     symfony_project_branch: "2.7"
-    symfony_project_php_path: /usr/bin/php
+    symfony_project_php_path: php
     symfony_project_keep_releases: 5
     symfony_project_git_clone_depth: 1
     symfony_project_console_opts: ''
