@@ -124,17 +124,31 @@ As you can see, the release number default is the current date/time with seconds
 
 ## hooks
 If you need any more tasks and stuff in your deployment, you now have the option to include hook scripts.
+In my projects there's often e.g. a gulp task that has to be started before finishing the release. You're also free to create more folders yourself or do whatever you need.
+As an additional goodie, you can use the internal dynamically created facts from main role:
 
+```
+  symfony_project_release # release timestamp
+  symfony_current_release # release name
+  symfony_current_release_dir # fully qualified path to release
+  symfony_shared_dir # shared folder base path
+  symfony_console # fully qualified console command path
+```
 possible hooks:
 
 ```
-    symfony_project_post_folder_creation_tasks: task hook after folder creation
-    symfony_project_pre_cache_warmup_tasks: after cache warmup
-    symfony_project_pre_live_switch_tasks: before live symlink is switched
-    symfony_project_post_live_switch_tasks: after live symlink is switched
+  symfony_project_post_folder_creation_tasks: task hook after folder creation
+  symfony_project_pre_cache_warmup_tasks: after cache warmup
+  symfony_project_pre_live_switch_tasks: before live symlink is switched
+  symfony_project_post_live_switch_tasks: after live symlink is switched
 ```
 
 These hooks trigger an include when defined.
+Define hooks:
+```
+  symfony_project_post_folder_creation_tasks: "{{ playbook_dir }}/hooks/post_folder_creation.yml"
+```
+The "hooks" dir should be in your deployment project as a subfolder. I'd recommend to use this name as a convention. Also it's convinient to use the name of the hook task as a yml name.
 
 ## Dependencies
 
