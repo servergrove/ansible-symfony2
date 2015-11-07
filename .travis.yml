@@ -9,6 +9,7 @@ addons:
     packages:
     - php5-cli
     - php5-common
+    - php5-curl
 
 install:
   # Install Ansible.
