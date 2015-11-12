@@ -1,6 +1,12 @@
 # Changelog
 
-## v2.0
+## v2.0.1-alpha
+
+* bugfixes for parameters file
+* bugfix for migrations (@vviippola)
+* renamed includes to mirror their order
+
+## v2.0.0-alpha
 reworked and more flexible configuration
 
 * creates release version in a file per release

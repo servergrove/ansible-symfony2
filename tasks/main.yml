@@ -1,6 +1,6 @@
 ---
 # tasks file for symfony2
-- include: facts.yml
+- include: 00-facts.yml
 
 - name: Create/prepare necessary directories for release and shared data.
   file: state=directory path={{item.path}}
@@ -13,6 +13,10 @@
 - name: Pull sources from the repository.
   git: repo={{symfony_project_repo}} dest={{symfony_current_release_dir}} version={{symfony_project_branch}} accept_hostkey=yes depth={{symfony_project_git_clone_depth}}
 
+# will be replaced with symlink
+- name: Ensure logs directory is not present.
+  file: state=absent path="{{symfony_current_release_dir}}/app/logs"
+
 # read project's composer.json and store output
 - name: Read composer.json
   shell: cat {{symfony_current_release_dir}}/composer.json
@@ -20,26 +24,22 @@
 
 - include: "{{ symfony_project_post_folder_creation_tasks | default('empty.yml') }}"
 
-# will be replaced with symlink
-- name: Ensure logs directory is not present.
-  file: state=absent path="{{symfony_current_release_dir}}/app/logs"
-
 - name: Create symlinks to shared directories.
   file: state=link src="{{symfony_shared_dir}}{{item.src}}" path="{{symfony_current_release_dir}}{{item.path}}"
   with_items:
     - { src: "/app/logs", path: "/app/logs" }
 
-- include: config.yml
+- include: 10-config.yml
 
-- include: composer.yml
+- include: 20-composer.yml
 
 - include: "{{ symfony_project_pre_cache_warmup_tasks | default('empty.yml') }}"
 
-- include: cache.yml
+- include: 30-cache.yml
 
-- include: assets.yml
+- include: 40-assets.yml
 
-- include: migrations.yml
+- include: 50-migrations.yml
 
 - name: create release file
   copy: content="{{symfony_current_release}}" dest="{{symfony_current_release_dir}}/RELEASE" mode=644
@@ -51,4 +51,4 @@
 
 - include: "{{ symfony_project_post_live_switch_tasks | default('empty.yml') }}"
 
-- include: clean_releases.yml
+- include: 60-clean_releases.yml
