@@ -5,4 +5,8 @@
 
 - name: Run mongodb schema update.
   action: shell {{symfony_project_php_path}} {{symfony_console}} doctrine:mongodb:schema:update --no-interaction
-  when: symfony_project_fire_schema_update == true and composer_content.stdout.find('mongodb-odm') != -1
+  when: symfony_project_fire_schema_update == true and composer_content.stdout.find('mongodb-odm') != -1 and symfony_project_database_type = 'mongodb'
+
+- name: Run mysql schema update.
+  action: shell {{symfony_project_php_path}} {{symfony_console}} doctrine:schema:update --force --no-interaction
+  when: symfony_project_fire_schema_update == true and symfony_project_database_type = 'mysql'
