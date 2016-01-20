@@ -2,7 +2,7 @@
 # simplify folder and command vars
 
 - name: Check/define release name.
-  set_fact: symfony_project_release={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
+  set_fact: symfony_project_release="{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
   when: symfony_project_release == None
 
 - name: Set symfony_current_release.
