@@ -42,7 +42,7 @@ This playbook is taken from the travis testcase. You can always pass these value
 ---
 - hosts: servers
   roles:
-    - ansible-symfony2
+    - servergrove.symfony2
 
   vars:
     symfony_project_root: /tmp/test_app
@@ -92,6 +92,7 @@ These are the possible role variables - you only need to have a small set define
     symfony_project_git_clone_depth: 1 # uses git shallow copy
     symfony_project_github_oauth_token: Auth token for github rate limits
     symfony_project_console_opts: ''
+    symfony_project_console_command: 'app/console' # sf >= 3.0 bin/console
     symfony_project_parameters_file: parameters.yml # optional fixed parameters file in shared
     symfony_project_cache_command: cache:warmup
 
