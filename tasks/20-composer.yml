@@ -4,10 +4,6 @@
   register: composer_file
   when: symfony_project_manage_composer == True
 
-- name: Add github token
-  shell: "{{symfony_project_composer_path}} config -g github-oauth.github.com {{symfony_project_github_token}}"
-  when: symfony_project_github_token
-
 - name: Install composer.
   get_url: url=https://getcomposer.org/composer.phar dest={{symfony_project_composer_path}} mode=0755 validate_certs=no
   when: symfony_project_manage_composer == True and composer_file.stat.exists == False
@@ -15,6 +11,10 @@
 - name: Update composer if already exists.
   shell: "{{symfony_project_composer_path}} selfupdate"
   when: composer_file.stat.exists == True and symfony_project_manage_composer == True
+
+- name: Add github token
+  shell: "{{symfony_project_composer_path}} config -g github-oauth.github.com {{symfony_project_github_token}}"
+  when: symfony_project_github_token != None
 
 - name: Link composer to project dir.
   file: state=link src={{symfony_project_composer_path}} path={{symfony_current_release_dir}}/composer
