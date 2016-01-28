@@ -41,7 +41,7 @@
 
 - include: 50-migrations.yml
 
-- name: create release file
+- name: Create release file.
   copy: content="{{symfony_current_release}}" dest="{{symfony_current_release_dir}}/RELEASE" mode=644
 
 - include: "{{ symfony_project_pre_live_switch_tasks | default('empty.yml') }}"

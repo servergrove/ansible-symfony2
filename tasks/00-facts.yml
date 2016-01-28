@@ -15,4 +15,4 @@
   set_fact: symfony_shared_dir={{symfony_project_root}}/shared
 
 - name: Set symfony_console.
-  set_fact: symfony_console={{symfony_current_release_dir}}/{{symfony_project_console_command}}
+  set_fact: symfony_console="{{symfony_current_release_dir}}/{{symfony_project_console_command}} --env={{symfony_project_env}}"
