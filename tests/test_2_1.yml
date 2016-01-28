@@ -15,8 +15,6 @@
 
     # optional parameters, covered by defaults
     symfony_project_console_opts: '--no-debug'
-    symfony_project_composer_opts: '--no-dev --optimize-autoloader'
-    symfony_project_keep_releases: 5
 
     symfony_project_release: ~
     symfony_project_branch: "2.1"

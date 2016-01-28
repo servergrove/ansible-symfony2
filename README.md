@@ -1,6 +1,8 @@
 # Symfony2
 [![Build Status](https://travis-ci.org/servergrove/ansible-symfony2.svg?branch=master)](https://travis-ci.org/servergrove/ansible-symfony2)
 
+Important: This role only supports ansible <2.0 at the moment!
+
 Ansible role to easily deploy Symfony2 applications.
 It will clone a git repository, a specific branch or a tag, download and run composer install, and run assetic:dump when finished.
 The resulting directory structure is similar to what capifony/capistrano creates:
