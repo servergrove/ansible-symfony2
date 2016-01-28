@@ -23,7 +23,6 @@
     symfony_project_php_path: php
     symfony_project_keep_releases: 5
     symfony_project_git_clone_depth: 1
-    symfony_project_console_opts: ''
 
     symfony_project_manage_composer: True
     symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
