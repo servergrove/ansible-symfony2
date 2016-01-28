@@ -1,6 +1,6 @@
 ---
 - name: Run migrations.
-  action: shell {{symfony_project_php_path}} {{symfony_console}} doctrine:migrations:migrate -n
+  action: shell {{symfony_project_php_path}} {{symfony_console}} doctrine:migrations:migrate --env={{symfony_project_env}} -n
   when: symfony_project_fire_migrations == true and composer_content.stdout.find('doctrine-migrations-bundle') != -1
 
 - name: Run mongodb schema update.
