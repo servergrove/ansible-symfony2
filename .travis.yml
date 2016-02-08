@@ -23,20 +23,20 @@ install:
 
 script:
   # Check the role/playbook's syntax.
-  - "ansible-playbook -i tests/inventory tests/test_2_1.yml --syntax-check"
-  - "ansible-playbook -i tests/inventory tests/test_2_2.yml --syntax-check"
-  - "ansible-playbook -i tests/inventory tests/test_2_3.yml --syntax-check"
-  - "ansible-playbook -i tests/inventory tests/test_2_4.yml --syntax-check"
+  #- "ansible-playbook -i tests/inventory tests/test_2_1.yml --syntax-check"
+  #- "ansible-playbook -i tests/inventory tests/test_2_2.yml --syntax-check"
+  #- "ansible-playbook -i tests/inventory tests/test_2_3.yml --syntax-check"
+  #- "ansible-playbook -i tests/inventory tests/test_2_4.yml --syntax-check"
   - "ansible-playbook -i tests/inventory tests/test_2_5.yml --syntax-check"
   - "ansible-playbook -i tests/inventory tests/test_2_6.yml --syntax-check"
   - "ansible-playbook -i tests/inventory tests/test_2_7.yml --syntax-check"
   - "ansible-playbook -i tests/inventory tests/test_2_8.yml --syntax-check"
   - "ansible-playbook -i tests/inventory tests/test_3_0.yml --syntax-check"
   # Run playbooks
-  - "ansible-playbook -i tests/inventory tests/test_2_1.yml --connection=local"
-  - "ansible-playbook -i tests/inventory tests/test_2_2.yml --connection=local"
-  - "ansible-playbook -i tests/inventory tests/test_2_3.yml --connection=local"
-  - "ansible-playbook -i tests/inventory tests/test_2_4.yml --connection=local"
+  #- "ansible-playbook -i tests/inventory tests/test_2_1.yml --connection=local"
+  #- "ansible-playbook -i tests/inventory tests/test_2_2.yml --connection=local"
+  #- "ansible-playbook -i tests/inventory tests/test_2_3.yml --connection=local"
+  #- "ansible-playbook -i tests/inventory tests/test_2_4.yml --connection=local"
   - "ansible-playbook -i tests/inventory tests/test_2_5.yml --connection=local"
   - "ansible-playbook -i tests/inventory tests/test_2_6.yml --connection=local"
   - "ansible-playbook -i tests/inventory tests/test_2_7.yml --connection=local"
