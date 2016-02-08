@@ -30,3 +30,11 @@
     symfony_project_enable_post_cmd: True
     symfony_project_fire_schema_update: True
     symfony_project_fire_migrations: True
+
+    symfony_project_console_command: 'bin/console'
+
+    symfony_project_shared_folders:
+      - {name: logs, src: var/logs, path: var/logs}
+
+    symfony_project_managed_folders:
+      - {name: cache, path: var/cache}

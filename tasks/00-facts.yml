@@ -2,17 +2,17 @@
 # simplify folder and command vars
 
 - name: Check/define release name.
-  set_fact: symfony_project_release={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
+  set_fact: symfony_project_release="{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
   when: symfony_project_release == None
 
 - name: Set symfony_current_release.
-  set_fact: symfony_current_release={{symfony_project_release}}_{{symfony_project_branch}}
+  set_fact: symfony_current_release="{{symfony_project_release}}_{{symfony_project_branch}}"
 
 - name: Set symfony_current_release_dir.
-  set_fact: symfony_current_release_dir={{symfony_project_root}}/releases/{{symfony_current_release}}
+  set_fact: symfony_current_release_dir="{{symfony_project_root}}/releases/{{symfony_current_release}}"
 
 - name: Set symfony_shared_dir.
-  set_fact: symfony_shared_dir={{symfony_project_root}}/shared
+  set_fact: symfony_shared_dir="{{symfony_project_root}}/shared"
 
 - name: Set symfony_console.
   set_fact: symfony_console="{{symfony_current_release_dir}}/{{symfony_project_console_command}} --env={{symfony_project_env}}"
