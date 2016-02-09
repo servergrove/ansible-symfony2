@@ -92,9 +92,10 @@ These are the possible role variables - you only need to have a small set define
     symfony_project_php_path: php
     symfony_project_keep_releases: 5
     symfony_project_git_clone_depth: 1 # uses git shallow copy
-    symfony_project_github_oauth_token: Auth token for github rate limits
+    symfony_project_github_token: Auth token for github rate limits
     symfony_project_console_opts: ''
     symfony_project_console_command: 'app/console' # sf >= 3.0 bin/console
+    symfony_project_config_dir: 'app/config' # symfony configuration dir
     symfony_project_parameters_file: parameters.yml # optional fixed parameters file in shared
     symfony_project_cache_command: cache:warmup
 
@@ -106,6 +107,12 @@ These are the possible role variables - you only need to have a small set define
     symfony_project_fire_schema_update: False # rund mongodb schema update if installed
     symfony_project_fire_migrations: run doctrine migrations, if installed
     symfony_project_symlink_assets: run assets:create with symlink options
+
+    symfony_project_shared_folders: # folders to be linked from shared directory to release dir
+      - {name: logs, src: app/logs, path: app/logs}
+
+    symfony_project_managed_folders: # folderst to be created/checked in release dir
+      - {name: cache, path: app/cache}
 ```
 
 ### Role variable defaults
@@ -184,6 +191,14 @@ Create ```<your deployment>/hooks/post_folder_creation.yml```:
 
 - name: hook | Symlink to release.
   file: state=link src="{{symfony_shared_dir}}/web/uploads" path="{{symfony_current_release_dir}}/web/uploads"
+```
+As an alternative to managing folders via hooks, you can also configure either the shared folders or the creation of folders in your release directory in your confguration:
+
+```yaml
+---
+symfony_project_shared_folders: # folders to be linked from shared directory to release dir
+  - {name: logs, src: app/logs, path: app/logs}
+  - {name: uploads, src: web/uploads, path: web/uploads}
 ```
 
 ## Dependencies

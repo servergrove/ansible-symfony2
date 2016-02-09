@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.1
+
+* refactoring to have more control over folders when deploying
+* more tests for current symfony versions
+* compatibility with new symfony folder and command structure
+
+## v2.0
+
+* bugfixes for folders
+* stability release
+
 ## v2.0.1-alpha
 
 * bugfixes for parameters file

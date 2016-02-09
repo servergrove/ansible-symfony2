@@ -20,6 +20,7 @@ symfony_project_git_clone_depth: 1
 symfony_project_github_token: ~
 symfony_project_console_opts: ''
 symfony_project_console_command: 'app/console'
+symfony_project_config_dir: 'app/config'
 symfony_project_parameters_file: parameters.yml
 symfony_project_cache_command: cache:warmup
 
@@ -31,3 +32,11 @@ symfony_project_enable_cache_warmup: True
 symfony_project_fire_schema_update: False
 symfony_project_fire_migrations: False
 symfony_project_symlink_assets: True
+
+# ensured to be absent in release and linked from shared
+symfony_project_shared_folders:
+  - {name: logs, src: app/logs, path: app/logs}
+
+# ensured to be present
+symfony_project_managed_folders:
+  - {name: cache, path: app/cache}
