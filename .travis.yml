@@ -41,4 +41,4 @@ script:
   - "ansible-playbook -i tests/inventory tests/test_2_6.yml --connection=local"
   - "ansible-playbook -i tests/inventory tests/test_2_7.yml --connection=local"
   - "ansible-playbook -i tests/inventory tests/test_2_8.yml --connection=local"
-  - "ansible-playbook -i tests/inventory tests/test_3_0.yml --connection=local"
+  #- "ansible-playbook -i tests/inventory tests/test_3_0.yml --connection=local"
