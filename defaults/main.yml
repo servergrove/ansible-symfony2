@@ -1,16 +1,16 @@
 ---
 # necessary project vars
 
-#symfony_project_root: ''
-#symfony_project_composer_path: ''
-#symfony_project_repo: ''
-#symfony_project_env: ''
+#symfony_project_root: ""
+#symfony_project_composer_path: ""
+#symfony_project_repo: ""
+#symfony_project_env: ""
 
 # hooks
-symfony_project_post_folder_creation_tasks: ~
-symfony_project_pre_cache_warmup_tasks: ~
-symfony_project_pre_live_switch_tasks: ~
-symfony_project_post_live_switch_tasks: ~
+symfony_project_post_folder_creation_tasks: "{{role_path}}/tasks/empty.yml"
+symfony_project_pre_cache_warmup_tasks: "{{role_path}}/tasks/empty.yml"
+symfony_project_pre_live_switch_tasks: "{{role_path}}/tasks/empty.yml"
+symfony_project_post_live_switch_tasks: "{{role_path}}/tasks/empty.yml"
 
 symfony_project_release: ~
 symfony_project_branch: master
@@ -18,14 +18,14 @@ symfony_project_php_path: php
 symfony_project_keep_releases: 5
 symfony_project_git_clone_depth: 1
 symfony_project_github_token: ~
-symfony_project_console_opts: ''
-symfony_project_console_command: 'app/console'
-symfony_project_config_dir: 'app/config'
+symfony_project_console_opts: ""
+symfony_project_console_command: "app/console"
+symfony_project_config_dir: "app/config"
 symfony_project_parameters_file: parameters.yml
 symfony_project_cache_command: cache:warmup
 
 symfony_project_manage_composer: True
-symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'
+symfony_project_composer_opts: "--no-dev --optimize-autoloader --no-interaction"
 symfony_project_composer_run_install: True
 
 symfony_project_enable_cache_warmup: True
