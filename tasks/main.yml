@@ -27,7 +27,7 @@
   shell: cat {{symfony_current_release_dir}}/composer.json
   register: composer_content
 
-- include: "{{symfony_project_post_folder_creation_tasks | default('empty.yml')}}"
+- include: "{{symfony_project_post_folder_creation_tasks}}"
 
 - name: Create symlinks to shared directories.
   file: state=link src="{{symfony_shared_dir}}/{{item.src}}" path="{{symfony_current_release_dir}}/{{item.path}}"
@@ -37,7 +37,7 @@
 
 - include: 20-composer.yml
 
-- include: "{{symfony_project_pre_cache_warmup_tasks | default('empty.yml')}}"
+- include: "{{symfony_project_pre_cache_warmup_tasks}}"
 
 - include: 30-cache.yml
 
@@ -48,11 +48,11 @@
 - name: Create release file.
   copy: content="{{symfony_current_release}}" dest="{{symfony_current_release_dir}}/RELEASE" mode=644
 
-- include: "{{symfony_project_pre_live_switch_tasks | default('empty.yml')}}"
+- include: "{{symfony_project_pre_live_switch_tasks}}"
 
 - name: Create symlink for release.
   file: state=link src="{{symfony_current_release_dir}}" path="{{symfony_project_root}}/current"
 
-- include: "{{symfony_project_post_live_switch_tasks | default('empty.yml')}}"
+- include: "{{symfony_project_post_live_switch_tasks}}"
 
 - include: 60-clean_releases.yml
