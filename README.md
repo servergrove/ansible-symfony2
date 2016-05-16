@@ -1,7 +1,8 @@
 # Symfony2
 [![Build Status](https://travis-ci.org/servergrove/ansible-symfony2.svg?branch=master)](https://travis-ci.org/servergrove/ansible-symfony2)
 
-Important: This role only supports ansible <2.0 at the moment!
+If you use ansible <2.0, please do a ```ansible-galaxy install servergrove.symfony2,v1.9.0``` to get the last backwards-compatible version.
+Otherwise you can stick with stable "master" :-)
 
 Ansible role to easily deploy Symfony2 applications.
 It will clone a git repository, a specific branch or a tag, download and run composer install, and run assetic:dump when finished.
