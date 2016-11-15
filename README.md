@@ -91,6 +91,7 @@ These are the possible role variables - you only need to have a small set define
 
     symfony_project_branch: git branch, commit hash or version tag to deploy - defaults to master
     symfony_project_php_path: php
+    symfony_project_php_options: ""
     symfony_project_keep_releases: 5
     symfony_project_git_clone_depth: 1 # uses git shallow copy
     symfony_project_github_token: Auth token for github rate limits
@@ -201,6 +202,29 @@ symfony_project_shared_folders: # folders to be linked from shared directory to 
   - {name: logs, src: app/logs, path: app/logs}
   - {name: uploads, src: web/uploads, path: web/uploads}
 ```
+## Passing PHP options
+
+Suppose you need to overide some of php's options on the command line. Simply set the symfony_project_php_options. For example
+```yaml
+---
+- hosts: servers
+  roles:
+    - servergrove.symfony2
+
+  vars:
+    symfony_project_root: /tmp/test_app
+    symfony_project_name: travis-test
+    symfony_project_composer_path: /tmp/test_app/shared/composer.phar
+    symfony_project_repo: https://github.com/symfony/symfony-standard.git
+    symfony_project_env: prod
+
+    symfony_project_console_opts: '--no-debug'
+    symfony_project_keep_releases: 5
+
+    symfony_project_php_path: php
+    symfony_project_php_options: -dmemory_limit=512M -dzend.enable_gc=0
+```
+This will set the php variables memory_limit to 512M and zend.enable_gc to 0 when any php command is run, such as composer install or cache:warmup.
 
 ## Dependencies
 
