@@ -6,7 +6,7 @@
     - cache
 
 - name: Warmup sf cache.
-  shell: cd {{symfony_current_release_dir}} && export SYMFONY_ENV={{symfony_project_env}}; {{symfony_project_php_path}} {{symfony_console}} {{symfony_project_cache_command}} {{symfony_project_console_opts}}
+  shell: cd {{symfony_current_release_dir}} && export SYMFONY_ENV={{symfony_project_env}}; {{symfony_project_php_path}} {{symfony_project_php_options}} {{symfony_console}} {{symfony_project_cache_command}} {{symfony_project_console_opts}}
   when: symfony_project_enable_cache_warmup == True
   tags:
     - cache

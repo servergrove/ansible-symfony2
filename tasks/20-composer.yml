@@ -21,5 +21,5 @@
   when: symfony_project_manage_composer == True
 
 - name: Run composer install.
-  shell: cd {{symfony_current_release_dir}} && export SYMFONY_ENV={{symfony_project_env}}; {{symfony_project_php_path}} {{symfony_project_composer_path}} install {{symfony_project_composer_opts}}
+  shell: cd {{symfony_current_release_dir}} && export SYMFONY_ENV={{symfony_project_env}}; {{symfony_project_php_path}} {{symfony_project_php_options}} {{symfony_project_composer_path}} install {{symfony_project_composer_opts}}
   when: symfony_project_composer_run_install == True
