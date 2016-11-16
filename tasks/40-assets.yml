@@ -1,8 +1,16 @@
 ---
-- name: Dump assetic assets.
+- name: Dump assetic assets without environment variables.
   shell: cd {{symfony_current_release_dir}} && {{symfony_project_php_path}} {{symfony_project_php_options}} {{symfony_console}} assetic:dump {{symfony_project_console_opts}}
-  when: composer_content.stdout.find('assetic-bundle') != -1
+  when: composer_content.stdout.find('assetic-bundle') != -1 and symfony_project_uses_env == False
 
-- name: Symlink/install assets.
+- name: Dump assetic assets with environment variables.
+  shell: cd {{symfony_current_release_dir}} && export SYMFONY__DATABASE__USER={{symfony_project_db_user}} SYMFONY__DATABASE__PASSWORD={{symfony_project_db_password}}; {{symfony_project_php_path}} {{symfony_project_php_options}} {{symfony_console}} assetic:dump {{symfony_project_console_opts}}
+  when: composer_content.stdout.find('assetic-bundle') != -1 and symfony_project_uses_env == True
+
+- name: Symlink/install assets without environment variables.
   shell: cd {{symfony_current_release_dir}} && {{symfony_project_php_path}} {{symfony_project_php_options}} {{symfony_console}} assets:install --symlink {{symfony_project_console_opts}}
-  when: symfony_project_symlink_assets == True
+  when: symfony_project_symlink_assets == True and symfony_project_uses_env == False
+
+- name: Symlink/install assets with environment variables.
+  shell: cd {{symfony_current_release_dir}} && export SYMFONY__DATABASE__USER={{symfony_project_db_user}} SYMFONY__DATABASE__PASSWORD={{symfony_project_db_password}}; {{symfony_project_php_path}} {{symfony_project_php_options}} {{symfony_console}} assets:install --symlink {{symfony_project_console_opts}}
+  when: symfony_project_symlink_assets == True and symfony_project_uses_env == True

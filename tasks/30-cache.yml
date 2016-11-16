@@ -5,8 +5,15 @@
   tags:
     - cache
 
-- name: Warmup sf cache.
+- name: Warmup sf cache without environment variables.
   shell: cd {{symfony_current_release_dir}} && export SYMFONY_ENV={{symfony_project_env}}; {{symfony_project_php_path}} {{symfony_project_php_options}} {{symfony_console}} {{symfony_project_cache_command}} {{symfony_project_console_opts}}
-  when: symfony_project_enable_cache_warmup == True
+  when: symfony_project_enable_cache_warmup == True and symfony_project_uses_env == False
   tags:
     - cache
+
+- name: Warmup sf cache with environment variables.
+  shell: cd {{symfony_current_release_dir}} && export SYMFONY_ENV={{symfony_project_env}} SYMFONY__DATABASE__USER={{symfony_project_db_user}} SYMFONY__DATABASE__PASSWORD={{symfony_project_db_password}}; {{symfony_project_php_path}} {{symfony_project_php_options}} {{symfony_console}} {{symfony_project_cache_command}} {{symfony_project_console_opts}}
+  when: symfony_project_enable_cache_warmup == True and symfony_project_uses_env == True
+  tags:
+    - cache
+
