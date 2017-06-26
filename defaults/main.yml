@@ -33,6 +33,7 @@ symfony_project_enable_cache_warmup: True
 symfony_project_fire_schema_update: False
 symfony_project_fire_migrations: False
 symfony_project_symlink_assets: True
+symfony_project_assetic_dump: True
 
 # ensured to be absent in release and linked from shared
 symfony_project_shared_folders:
