@@ -24,6 +24,7 @@ symfony_project_console_command: "app/console"
 symfony_project_config_dir: "app/config"
 symfony_project_parameters_file: parameters.yml
 symfony_project_cache_command: cache:warmup
+symfony_project_cache_dir: app
 
 symfony_project_manage_composer: True
 symfony_project_composer_opts: "--no-dev --optimize-autoloader --no-interaction"
