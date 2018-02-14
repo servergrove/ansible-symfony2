@@ -100,6 +100,7 @@ These are the possible role variables - you only need to have a small set define
     symfony_project_config_dir: 'app/config' # symfony configuration dir
     symfony_project_parameters_file: parameters.yml # optional fixed parameters file in shared
     symfony_project_cache_command: cache:warmup
+    symfony_project_cache_dir: app # sf >= 3.0 var
 
     symfony_project_manage_composer: True
     symfony_project_composer_opts: '--no-dev --optimize-autoloader --no-interaction'

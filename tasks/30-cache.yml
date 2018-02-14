@@ -1,6 +1,6 @@
 ---
 - name: Remove cache dir manually.
-  file: state=absent path={{symfony_current_release_dir}}/app/cache/{{symfony_project_env}}
+  file: state=absent path={{symfony_current_release_dir}}/{{symfony_project_cache_dir}}/cache/{{symfony_project_env}}
   when: symfony_project_enable_cache_warmup == True
   tags:
     - cache
