@@ -9,11 +9,11 @@
   when: symfony_project_manage_composer == True and composer_file.stat.exists == False
 
 - name: Update composer if already exists.
-  shell: "{{symfony_project_composer_path}} selfupdate"
+  shell: "{{symfony_project_php_path}} {{symfony_project_composer_path}} selfupdate"
   when: symfony_project_manage_composer == True and composer_file.stat.exists == True
 
 - name: Add github token
-  shell: "{{symfony_project_composer_path}} config -g github-oauth.github.com {{symfony_project_github_token}}"
+  shell: "{{symfony_project_php_path}} {{symfony_project_composer_path}} config -g github-oauth.github.com {{symfony_project_github_token}}"
   when: symfony_project_github_token != None
 
 - name: Link composer to project dir.
