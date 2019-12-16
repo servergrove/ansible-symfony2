@@ -7,10 +7,10 @@
 #symfony_project_env: ""
 
 # hooks
-symfony_project_post_folder_creation_tasks: "{{role_path}}/tasks/empty.yml"
-symfony_project_pre_cache_warmup_tasks: "{{role_path}}/tasks/empty.yml"
-symfony_project_pre_live_switch_tasks: "{{role_path}}/tasks/empty.yml"
-symfony_project_post_live_switch_tasks: "{{role_path}}/tasks/empty.yml"
+symfony_project_post_folder_creation_tasks: "{{ role_path }}/tasks/empty.yml"
+symfony_project_pre_cache_warmup_tasks: "{{ role_path }}/tasks/empty.yml"
+symfony_project_pre_live_switch_tasks: "{{ role_path }}/tasks/empty.yml"
+symfony_project_post_live_switch_tasks: "{{ role_path }}/tasks/empty.yml"
 
 symfony_project_release: ~
 symfony_project_branch: master

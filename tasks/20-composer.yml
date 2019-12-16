@@ -1,25 +1,27 @@
 ---
 - name: Check if composer exists.
-  stat: path={{symfony_project_composer_path}}
+  stat: path={{ symfony_project_composer_path }}
   register: composer_file
-  when: symfony_project_manage_composer == True
+  when: symfony_project_manage_composer
 
 - name: Install composer.
-  get_url: url=https://getcomposer.org/composer.phar dest={{symfony_project_composer_path}} mode=0755 validate_certs=no
-  when: symfony_project_manage_composer == True and composer_file.stat.exists == False
+  get_url: url=https://getcomposer.org/composer.phar dest={{ symfony_project_composer_path }} mode=0755 validate_certs=no
+  when: symfony_project_manage_composer and not composer_file.stat.exists
 
 - name: Update composer if already exists.
-  shell: "{{symfony_project_composer_path}} selfupdate"
-  when: symfony_project_manage_composer == True and composer_file.stat.exists == True
+  shell: "{{ symfony_project_composer_path }} selfupdate"
+  when: symfony_project_manage_composer and composer_file.stat.exists
 
 - name: Add github token
-  shell: "{{symfony_project_composer_path}} config -g github-oauth.github.com {{symfony_project_github_token}}"
+  shell: "{{ symfony_project_composer_path }} config -g github-oauth.github.com {{ symfony_project_github_token }}"
   when: symfony_project_github_token != None
 
 - name: Link composer to project dir.
-  file: state=link src={{symfony_project_composer_path}} path={{symfony_current_release_dir}}/composer
-  when: symfony_project_manage_composer == True
+  file: state=link src={{ symfony_project_composer_path }} path={{ symfony_current_release_dir }}/composer
+  when: symfony_project_manage_composer
 
 - name: Run composer install.
-  shell: cd {{symfony_current_release_dir}} && export SYMFONY_ENV={{symfony_project_env}}; {{symfony_project_php_path}} {{symfony_project_php_options}} {{symfony_project_composer_path}} install {{symfony_project_composer_opts}}
-  when: symfony_project_composer_run_install == True
+  shell: >
+    cd {{ symfony_current_release_dir }} && export SYMFONY_ENV={{ symfony_project_env }}; {{ symfony_project_php_path }}
+    {{ symfony_project_php_options }} {{ symfony_project_composer_path }} install {{ symfony_project_composer_opts }}
+  when: symfony_project_composer_run_install

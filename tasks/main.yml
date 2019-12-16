@@ -3,41 +3,49 @@
 - include: 00-facts.yml
 
 - name: Create base deployment directories.
-  file: state=directory path={{item.path}}
+  file: state=directory path={{ item.path }}
   with_items:
-    - { path: "{{symfony_current_release_dir}}" }
-    - { path: "{{symfony_shared_dir}}" }
+    - { path: "{{ symfony_current_release_dir }}" }
+    - { path: "{{ symfony_shared_dir }}" }
 
 - name: Create managed shared directories.
-  file: state=directory path="{{symfony_shared_dir}}/{{item.path}}"
-  with_items: "{{symfony_project_shared_folders}}"
+  file: state=directory path="{{ symfony_shared_dir }}/{{ item.path }}"
+  with_items: "{{ symfony_project_shared_folders }}"
 
 - name: Pull sources from the repository.
-  git: repo={{symfony_project_repo}} dest={{symfony_current_release_dir}} version={{symfony_project_branch}} accept_hostkey=yes depth={{symfony_project_git_clone_depth}}
+  git:
+    repo: "{{ symfony_project_repo }}"
+    dest: "{{ symfony_current_release_dir }}"
+    version: "{{ symfony_project_branch }}"
+    accept_hostkey: yes
+    depth: "{{ symfony_project_git_clone_depth }}"
 
 - name: Ensure shared folders are absent in release.
-  file: state=absent path="{{symfony_current_release_dir}}/{{item.path}}"
-  with_items: "{{symfony_project_shared_folders}}"
+  file: state=absent path="{{ symfony_current_release_dir }}/{{ item.path }}"
+  with_items: "{{ symfony_project_shared_folders }}"
 
 - name: Ensure managed folders are present.
-  file: state=directory path="{{symfony_current_release_dir}}/{{item.path}}"
-  with_items: "{{symfony_project_managed_folders}}"
+  file: state=directory path="{{ symfony_current_release_dir }}/{{ item.path }}"
+  with_items: "{{ symfony_project_managed_folders }}"
 
 - name: Read composer.json
-  shell: cat {{symfony_current_release_dir}}/composer.json
+  shell: cat {{ symfony_current_release_dir }}/composer.json
   register: composer_content
 
-- include: "{{symfony_project_post_folder_creation_tasks}}"
+- include: "{{ symfony_project_post_folder_creation_tasks }}"
 
 - name: Create symlinks to shared directories.
-  file: state=link src="{{symfony_shared_dir}}/{{item.src}}" path="{{symfony_current_release_dir}}/{{item.path}}"
-  with_items: "{{symfony_project_shared_folders}}"
+  file:
+    state: link
+    src: "{{ symfony_shared_dir }}/{{ item.src }}"
+    path: "{{ symfony_current_release_dir }}/{{ item.path }}"
+  with_items: "{{ symfony_project_shared_folders }}"
 
 - include: 10-config.yml
 
 - include: 20-composer.yml
 
-- include: "{{symfony_project_pre_cache_warmup_tasks}}"
+- include: "{{ symfony_project_pre_cache_warmup_tasks }}"
 
 - include: 30-cache.yml
 
@@ -46,13 +54,13 @@
 - include: 50-migrations.yml
 
 - name: Create release file.
-  copy: content="{{symfony_current_release}}" dest="{{symfony_current_release_dir}}/RELEASE" mode=644
+  copy: content="{{ symfony_current_release }}" dest="{{ symfony_current_release_dir }}/RELEASE" mode=644
 
-- include: "{{symfony_project_pre_live_switch_tasks}}"
+- include: "{{ symfony_project_pre_live_switch_tasks }}"
 
 - name: Create symlink for release.
-  file: state=link src="{{symfony_current_release_dir}}" path="{{symfony_project_root}}/current"
+  file: state=link src="{{ symfony_current_release_dir }}" path="{{ symfony_project_root }}/current"
 
-- include: "{{symfony_project_post_live_switch_tasks}}"
+- include: "{{ symfony_project_post_live_switch_tasks }}"
 
 - include: 60-clean_releases.yml
