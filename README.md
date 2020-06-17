@@ -85,7 +85,7 @@ These are the possible role variables - you only need to have a small set define
 
     # optional parameters, covered by defaults
     symfony_project_post_folder_creation_tasks: task hook after folder creation
-    symfony_project_pre_cache_warmup_tasks: after cache warmup
+    symfony_project_pre_cache_warmup_tasks: before cache warmup
     symfony_project_pre_live_switch_tasks: before live symlink is switched
     symfony_project_post_live_switch_tasks: after live symlink is switched
 
@@ -153,7 +153,7 @@ possible hooks:
 ```yaml
 ---
   symfony_project_post_folder_creation_tasks: task hook after folder creation
-  symfony_project_pre_cache_warmup_tasks: after cache warmup
+  symfony_project_pre_cache_warmup_tasks: before cache warmup
   symfony_project_pre_live_switch_tasks: before live symlink is switched
   symfony_project_post_live_switch_tasks: after live symlink is switched
 ```
